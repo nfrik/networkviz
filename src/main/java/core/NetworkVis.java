@@ -97,7 +97,7 @@ public class NetworkVis extends Application {
             @Override
             public void handle(ActionEvent event) {
                 Point3D newPoint = startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
-                world.getChildren().addAll(mapGraph.createEdge(startP,newPoint,1));
+                world.getChildren().addAll(mapGraph.createEdge(startP,newPoint));
                 startP = newPoint;
 //                for(Node node : world.getChildren()) {
 //                    node.getTransforms().add(new Rotate(0.5, 0, 0, 0, Rotate.X_AXIS));
@@ -136,27 +136,6 @@ public class NetworkVis extends Application {
         world.getChildren().addAll(axisGroup);
     }
 
-
-
-    private void matrixRotateNode(Node n, double alf, double bet, double gam){
-        double A11=Math.cos(alf)*Math.cos(gam);
-        double A12=Math.cos(bet)*Math.sin(alf)+Math.cos(alf)*Math.sin(bet)*Math.sin(gam);
-        double A13=Math.sin(alf)*Math.sin(bet)-Math.cos(alf)*Math.cos(bet)*Math.sin(gam);
-        double A21=-Math.cos(gam)*Math.sin(alf);
-        double A22=Math.cos(alf)*Math.cos(bet)-Math.sin(alf)*Math.sin(bet)*Math.sin(gam);
-        double A23=Math.cos(alf)*Math.sin(bet)+Math.cos(bet)*Math.sin(alf)*Math.sin(gam);
-        double A31=Math.sin(gam);
-        double A32=-Math.cos(gam)*Math.sin(bet);
-        double A33=Math.cos(bet)*Math.cos(gam);
-
-        double d = Math.acos((A11+A22+A33-1d)/2d);
-        if(d!=0d){
-            double den=2d*Math.sin(d);
-            Point3D p= new Point3D((A32-A23)/den,(A13-A31)/den,(A21-A12)/den);
-            n.setRotationAxis(p);
-            n.setRotate(Math.toDegrees(d));
-        }
-    }
 
     private void handleMouse(Scene scene) {
         scene.setOnMousePressed((MouseEvent me) -> {
@@ -230,10 +209,11 @@ class Graph {
             }
         }
 
+
         return ne;
     }
 
-    public Edge createEdge(Point3D point1, Point3D point2, double radius) {
+    public Edge createEdge(Point3D point1, Point3D point2) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = point2.subtract(point1);
         double height = diff.magnitude();
@@ -245,7 +225,7 @@ class Graph {
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
-        Edge line = new Edge(radius, height, point1, point2);
+        Edge line = new Edge(1, height, point1, point2);
 
         line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 
@@ -281,6 +261,26 @@ class Graph {
         //cyl.getTransforms().add(new Rotate());
 
         return cyl;
+    }
+
+    private void matrixRotateNode(Node n, double alf, double bet, double gam){
+        double A11=Math.cos(alf)*Math.cos(gam);
+        double A12=Math.cos(bet)*Math.sin(alf)+Math.cos(alf)*Math.sin(bet)*Math.sin(gam);
+        double A13=Math.sin(alf)*Math.sin(bet)-Math.cos(alf)*Math.cos(bet)*Math.sin(gam);
+        double A21=-Math.cos(gam)*Math.sin(alf);
+        double A22=Math.cos(alf)*Math.cos(bet)-Math.sin(alf)*Math.sin(bet)*Math.sin(gam);
+        double A23=Math.cos(alf)*Math.sin(bet)+Math.cos(bet)*Math.sin(alf)*Math.sin(gam);
+        double A31=Math.sin(gam);
+        double A32=-Math.cos(gam)*Math.sin(bet);
+        double A33=Math.cos(bet)*Math.cos(gam);
+
+        double d = Math.acos((A11+A22+A33-1d)/2d);
+        if(d!=0d){
+            double den=2d*Math.sin(d);
+            Point3D p= new Point3D((A32-A23)/den,(A13-A31)/den,(A21-A12)/den);
+            n.setRotationAxis(p);
+            n.setRotate(Math.toDegrees(d));
+        }
     }
 }
 
