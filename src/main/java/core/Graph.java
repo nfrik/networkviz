@@ -1,6 +1,5 @@
 package core;
 
-import javafx.geometry.Point3D;
 import javafx.scene.paint.Material;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -12,10 +11,10 @@ import java.util.*;
  */
 public class Graph {
 
-    private Map<Point3D, ArrayList<Edge>> adjMapList;
+    private Map<Vertex, ArrayList<Edge>> adjMapList;
 
     public Graph(){
-        adjMapList = new HashMap<Point3D,ArrayList<Edge>>();
+        adjMapList = new HashMap<Vertex,ArrayList<Edge>>();
     }
 
     /**
@@ -30,10 +29,10 @@ public class Graph {
      * Return the intersections, which are the vertices in this graph.
      * @return The vertices in this graph as GeographicPoints
      */
-    public Set<Point3D> getVertices(){
-        Set<Point3D> intersections = new HashSet<Point3D>();
+    public Set<Vertex> getVertices(){
+        Set<Vertex> intersections = new HashSet<Vertex>();
 
-        for(Point3D gp : adjMapList.keySet()){
+        for(Vertex gp : adjMapList.keySet()){
             intersections.add(gp);
         }
 
@@ -47,7 +46,7 @@ public class Graph {
     public int getNumEdges(){
         int ne=0;
 
-        for(Point3D gp : adjMapList.keySet()){
+        for(Vertex gp : adjMapList.keySet()){
             for(Edge gpe : adjMapList.get(gp)){
                 ne++;
             }
@@ -61,7 +60,7 @@ public class Graph {
 
         List<Edge> edges = new ArrayList<Edge>();
 
-        for(Point3D gp : adjMapList.keySet()){
+        for(Vertex gp : adjMapList.keySet()){
             for(Edge gpe : adjMapList.get(gp)){
                 edges.add(gpe);
             }
@@ -71,7 +70,7 @@ public class Graph {
     }
 
 
-    public boolean addVertex(Point3D point){
+    public boolean addVertex(Vertex point){
         if(!adjMapList.containsKey(point)){
             adjMapList.put(point,new ArrayList<Edge>());
             return true;
@@ -79,7 +78,7 @@ public class Graph {
         return false;
     }
 
-    public boolean updateVertex(Point3D point){
+    public boolean updateVertex(Vertex point){
         if(adjMapList.containsKey(point)){
             ArrayList<Edge> tempList = adjMapList.get(point);
             adjMapList.put(point,tempList);
@@ -88,7 +87,7 @@ public class Graph {
         return false;
     }
 
-    public void addEdge(Point3D from, Point3D to, Material material, Object uniqueProperties) throws IllegalArgumentException {
+    public void addEdge(Vertex from, Vertex to, Material material, Object uniqueProperties) throws IllegalArgumentException {
 
 //        if(!adjMapList.containsKey(from) || !adjMapList.containsKey(to)) {
 //            throw new IllegalArgumentException();
@@ -115,8 +114,8 @@ public class Graph {
 
     }
 
-    public List<Point3D> outNeighbors(Point3D of){
-        List<Point3D> outNbs = new ArrayList<Point3D>();
+    public List<Vertex> outNeighbors(Vertex of){
+        List<Vertex> outNbs = new ArrayList<Vertex>();
         if(!adjMapList.containsKey(of)){
             return null;
         }
@@ -127,7 +126,7 @@ public class Graph {
         return outNbs;
     }
 
-    public List<Edge> neighborEdgesOf(Point3D of){
+    public List<Edge> neighborEdgesOf(Vertex of){
         List<Edge> outNbs = new ArrayList<Edge>();
         if(!adjMapList.containsKey(of)){
             return null;
@@ -139,14 +138,14 @@ public class Graph {
         return outNbs;
     }
 
-    public List<Point3D> inNeighbors(Point3D of){
-        List<Point3D> inNbs = new ArrayList<Point3D>();
+    public List<Vertex> inNeighbors(Vertex of){
+        List<Vertex> inNbs = new ArrayList<Vertex>();
 
         if(!adjMapList.containsKey(of)){
             return null;
         }
 
-        for(Point3D start : adjMapList.keySet()){
+        for(Vertex start : adjMapList.keySet()){
             for(Edge se : adjMapList.get(start)){
                 if(se.getEndPoint().equals(of)) {
                     inNbs.add(se.getEndPoint());
@@ -157,14 +156,14 @@ public class Graph {
         return inNbs;
     }
 
-    public List<Edge> inNeighborsEdges(Point3D of){
+    public List<Edge> inNeighborsEdges(Vertex of){
         List<Edge> inNbs = new ArrayList<Edge>();
 
         if(!adjMapList.containsKey(of)){
             return null;
         }
 
-        for(Point3D start : adjMapList.keySet()){
+        for(Vertex start : adjMapList.keySet()){
             for(Edge se : adjMapList.get(start)){
                 if(se.getEndPoint().equals(of)) {
                     inNbs.add(se);
@@ -175,15 +174,15 @@ public class Graph {
         return inNbs;
     }
 
-    public Edge createEdge(Point3D point1, Point3D point2) {
-        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D diff = point2.subtract(point1);
+    public Edge createEdge(Vertex point1, Vertex point2) {
+        Vertex yAxis = new Vertex(0, 1, 0);
+        Vertex diff = (Vertex) point2.subtract(point1);
         double height = diff.magnitude();
 
-        Point3D mid = point2.midpoint(point1);
+        Vertex mid = (Vertex) point2.midpoint(point1);
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        Vertex axisOfRotation = (Vertex) diff.crossProduct(yAxis);
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
@@ -194,21 +193,19 @@ public class Graph {
         return line;
     }
 
-    public void transformEdge(Edge edge, Point3D point1, Point3D point2){
-        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D diff = point2.subtract(point1);
+    public void transformEdge(Edge edge, Vertex point1, Vertex point2){
+        Vertex yAxis = new Vertex(0, 1, 0);
+        Vertex diff = (Vertex) point2.subtract(point1);
         double height = diff.magnitude();
 
-        Point3D mid = point2.midpoint(point1);
+        Vertex mid = (Vertex) point2.midpoint(point1);
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        Vertex axisOfRotation = (Vertex) diff.crossProduct(yAxis);
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
-        Edge line = new Edge(1, height, point1, point2);
-
-        line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+        edge.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
     }
 
 }

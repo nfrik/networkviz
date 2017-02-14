@@ -83,12 +83,12 @@ public class NetworkVis extends Application {
 
         Graph mapGraph = new Graph();
 
-        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(100,100,50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(70,700,100),whiteMaterial,new Object());
-        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(-80,100,-50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Point3D(100,100,50),new Point3D(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Point3D(70,700,100),new Point3D(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Point3D(-80,100,-50),new Point3D(0,0,500),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(100,100,50),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(70,700,100),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(-80,100,-50),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(100,100,50),new Vertex(0,0,500),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(70,700,100),new Vertex(0,0,500),whiteMaterial,new Object());
+        mapGraph.addEdge(new Vertex(-80,100,-50),new Vertex(0,0,500),whiteMaterial,new Object());
 //        Edge edge1 = mapGraph.createEdge(new Point3D(0,0,0),new Point3D(100,100,100),1);
 //        Edge edge2 = mapGraph.createEdge(new Point3D(100,100,100),new Point3D(200,600,900),1);
 //        Edge edge3 = mapGraph.createEdge(new Point3D(200,600,900),new Point3D(700,900,1200),1);
@@ -100,10 +100,10 @@ public class NetworkVis extends Application {
 
         Random rn = new Random();
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
-            Point3D startP = new Point3D(0,0,0);
+            Vertex startP = new Vertex(0,0,0);
             @Override
             public void handle(ActionEvent event) {
-                Point3D newPoint = startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
+                Vertex newPoint = (Vertex) startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
                 world.getChildren().addAll(mapGraph.createEdge(startP,newPoint));
                 startP = newPoint;
 //                for(Node node : world.getChildren()) {

@@ -1,6 +1,5 @@
 package core;
 
-import javafx.geometry.Point3D;
 import javafx.scene.shape.Cylinder;
 
 /**
@@ -11,14 +10,14 @@ class Edge extends Cylinder {
     private String name;
     private Double resistance;
     private Object uniqueProperties;
-    private Point3D startPoint;
-    private Point3D endPoint;
+    private Vertex startPoint;
+    private Vertex endPoint;
 
     public Edge(double radius, double height) {
         super(radius, height);
     }
 
-    public Edge(double radius, double height, Point3D point1, Point3D point2) {
+    public Edge(double radius, double height, Vertex point1, Vertex point2) {
         super(radius, height);
         setStartPoint(point1);
         setEndPoint(point2);
@@ -48,19 +47,19 @@ class Edge extends Cylinder {
         this.uniqueProperties = uniqueProperties;
     }
 
-    public Point3D getStartPoint() {
+    public Vertex getStartPoint() {
         return startPoint;
     }
 
-    public void setStartPoint(Point3D startPoint) {
+    public void setStartPoint(Vertex startPoint) {
         this.startPoint = startPoint;
     }
 
-    public Point3D getEndPoint() {
+    public Vertex getEndPoint() {
         return endPoint;
     }
 
-    public void setEndPoint(Point3D endPoint) {
+    public void setEndPoint(Vertex endPoint) {
         this.endPoint = endPoint;
     }
 }
