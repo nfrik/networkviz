@@ -14,10 +14,8 @@ import javafx.geometry.Point3D;
 import javafx.scene.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
@@ -84,6 +82,13 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
         Graph mapGraph = new Graph();
+
+        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(100,100,50),whiteMaterial,new Object());
+        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(70,700,100),whiteMaterial,new Object());
+        mapGraph.addEdge(new Point3D(0,0,0),new Point3D(-80,100,-50),whiteMaterial,new Object());
+        mapGraph.addEdge(new Point3D(100,100,50),new Point3D(0,0,500),whiteMaterial,new Object());
+        mapGraph.addEdge(new Point3D(70,700,100),new Point3D(0,0,500),whiteMaterial,new Object());
+        mapGraph.addEdge(new Point3D(-80,100,-50),new Point3D(0,0,500),whiteMaterial,new Object());
 //        Edge edge1 = mapGraph.createEdge(new Point3D(0,0,0),new Point3D(100,100,100),1);
 //        Edge edge2 = mapGraph.createEdge(new Point3D(100,100,100),new Point3D(200,600,900),1);
 //        Edge edge3 = mapGraph.createEdge(new Point3D(200,600,900),new Point3D(700,900,1200),1);
@@ -91,6 +96,7 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(edge1,edge2,edge3);
         world.getChildren().addAll(sphere);
 
+        world.getChildren().addAll(mapGraph.getEdges());
 
         Random rn = new Random();
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
@@ -111,7 +117,7 @@ public class NetworkVis extends Application {
         }));
 
         loop.setCycleCount(Timeline.INDEFINITE);
-        loop.play();
+//        loop.play();
     }
 
 

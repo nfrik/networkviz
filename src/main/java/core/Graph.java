@@ -57,6 +57,20 @@ public class Graph {
         return ne;
     }
 
+    public List<Edge> getEdges(){
+
+        List<Edge> edges = new ArrayList<Edge>();
+
+        for(Point3D gp : adjMapList.keySet()){
+            for(Edge gpe : adjMapList.get(gp)){
+                edges.add(gpe);
+            }
+        }
+
+        return edges;
+    }
+
+
     public boolean addVertex(Point3D point){
         if(!adjMapList.containsKey(point)){
             adjMapList.put(point,new ArrayList<Edge>());
@@ -76,9 +90,18 @@ public class Graph {
 
     public void addEdge(Point3D from, Point3D to, Material material, Object uniqueProperties) throws IllegalArgumentException {
 
-        if(!adjMapList.containsKey(from) || !adjMapList.containsKey(to)) {
-            throw new IllegalArgumentException();
-        }else{
+//        if(!adjMapList.containsKey(from) || !adjMapList.containsKey(to)) {
+//            throw new IllegalArgumentException();
+//        }else{
+
+            if(!adjMapList.containsKey(from)){
+                addVertex(from);
+            }
+
+            if(!adjMapList.containsKey(to)){
+                addVertex(to);
+            }
+
             ArrayList<Edge> tempList = adjMapList.get(from);
             Edge se = createEdge(from,to);
 
@@ -88,7 +111,7 @@ public class Graph {
             tempList.add(se);
 
             adjMapList.put(from,tempList);
-        }
+//        }
 
     }
 
@@ -104,6 +127,18 @@ public class Graph {
         return outNbs;
     }
 
+    public List<Edge> neighborEdgesOf(Point3D of){
+        List<Edge> outNbs = new ArrayList<Edge>();
+        if(!adjMapList.containsKey(of)){
+            return null;
+        }
+
+        for(Edge se : adjMapList.get(of)){
+            outNbs.add(se);
+        }
+        return outNbs;
+    }
+
     public List<Point3D> inNeighbors(Point3D of){
         List<Point3D> inNbs = new ArrayList<Point3D>();
 
@@ -115,6 +150,24 @@ public class Graph {
             for(Edge se : adjMapList.get(start)){
                 if(se.getEndPoint().equals(of)) {
                     inNbs.add(se.getEndPoint());
+                }
+            }
+        }
+
+        return inNbs;
+    }
+
+    public List<Edge> inNeighborsEdges(Point3D of){
+        List<Edge> inNbs = new ArrayList<Edge>();
+
+        if(!adjMapList.containsKey(of)){
+            return null;
+        }
+
+        for(Point3D start : adjMapList.keySet()){
+            for(Edge se : adjMapList.get(start)){
+                if(se.getEndPoint().equals(of)) {
+                    inNbs.add(se);
                 }
             }
         }
@@ -139,6 +192,23 @@ public class Graph {
         line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 
         return line;
+    }
+
+    public void transformEdge(Edge edge, Point3D point1, Point3D point2){
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = point2.subtract(point1);
+        double height = diff.magnitude();
+
+        Point3D mid = point2.midpoint(point1);
+        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
+
+        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+
+        Edge line = new Edge(1, height, point1, point2);
+
+        line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
     }
 
 }
