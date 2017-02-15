@@ -2,6 +2,7 @@ package core;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Material;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 
@@ -128,6 +129,30 @@ public class Graph {
 
     }
 
+    public void addEdge(Edge edge, PhongMaterial material, Object uniqueProperties) throws IllegalArgumentException {
+
+
+        if(!adjMapList.containsKey(edge.getStartPoint())){
+            addVertex(edge.getStartPoint());
+        }
+
+        if(!adjMapList.containsKey(edge.getEndPoint())){
+            addVertex(edge.getEndPoint());
+        }
+
+        ArrayList<Edge> tempList = adjMapList.get(edge.getStartPoint());
+//        Edge se = createEdge(edge.getStartPoint(),edge.getEndPoint());
+
+        //TODO find better way to assign material
+        edge.setMaterial(material);
+        edge.setUniqueProperties(uniqueProperties);
+
+        tempList.add(edge);
+
+        adjMapList.put(edge.getStartPoint(),tempList);
+
+    }
+
     public List<Vertex> outNeighbors(Vertex of){
         List<Vertex> outNbs = new ArrayList<Vertex>();
         if(!adjMapList.containsKey(of)){
@@ -178,9 +203,11 @@ public class Graph {
         }
 
         for(Vertex start : adjMapList.keySet()){
-            for(Edge se : adjMapList.get(start)){
-                if(se.getEndPoint().equals(of)) {
-                    inNbs.add(se);
+            if(adjMapList.get(start) != null) {
+                for (Edge se : adjMapList.get(start)) {
+                    if (se.getEndPoint().equals(of)) {
+                        inNbs.add(se);
+                    }
                 }
             }
         }
@@ -207,37 +234,50 @@ public class Graph {
         return line;
     }
 
-    public void transformEdge(Edge edge, Vertex point1, Vertex point2){
-        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D diff = point2.getPoint3D().subtract(point1.getPoint3D());
+    public void transformEdge(Edge edge, Point3D pivotPoint, Point3D point1, Point3D point2){
+//        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D yAxis = edge.getEndPoint().getPoint3D().subtract(edge.getStartPoint().getPoint3D()).normalize();
+        Point3D diff = point2.subtract(point1);
 
-        Point3D mid = point2.getPoint3D().midpoint(point1.getPoint3D());
+//        Point3D mid = point2.midpoint(point1).add(edge.getEndPoint().getPoint3D().midpoint(edge.getStartPoint().getPoint3D()));
+        Point3D mid = point2.midpoint(point1);
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
         Point3D axisOfRotation =  diff.crossProduct(yAxis);
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), pivotPoint.getX(),pivotPoint.getY(),pivotPoint.getZ(), axisOfRotation);
 
+        edge.setHeight(diff.magnitude());
         edge.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+
+        edge.getStartPoint().setTranslateX(point1.getX());
+        edge.getStartPoint().setTranslateY(point1.getY());
+        edge.getStartPoint().setTranslateZ(point1.getZ());
+
+        edge.getEndPoint().setTranslateX(point2.getX());
+        edge.getEndPoint().setTranslateY(point2.getY());
+        edge.getEndPoint().setTranslateZ(point2.getZ());
     }
 
     public void transformVertex(Vertex vertex, Point3D destination){
         List<Edge> edges = outNeigborEdges(vertex);
 
-        edges.addAll(inNeighborsEdges(vertex));
+        List<Edge> inEdges = inNeighborsEdges(vertex);
 
-        vertex.setTranslateX(destination.getX());
-        vertex.setTranslateY(destination.getY());
-        vertex.setTranslateZ(destination.getZ());
+        if(inEdges!=null) {
+            edges.addAll(inNeighborsEdges(vertex));
+        }
+
 
         if(edges!=null && edges.size()>0){
-//            for(Edge ed: edges){
-//                if(ed.getEndPoint().equals(vertex)){
-//                    transformEdge(ed,ed.getStartPoint(),vertex);
-//                }else {
-//                    transformEdge(ed,vertex,ed.getEndPoint());
-//                }
-//            }
+            for(Edge ed: edges){
+                if(ed.getEndPoint().equals(vertex)){//Change end point
+                    transformEdge(ed,ed.getStartPoint().getPoint3D(),ed.getStartPoint().getPoint3D(),destination);
+                }else {//Change start point
+                    transformEdge(ed,ed.getEndPoint().getPoint3D(),destination,ed.getEndPoint().getPoint3D());
+                }
+            }
+
         }
 
     }

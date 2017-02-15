@@ -82,22 +82,27 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
         Graph mapGraph = new Graph(world);
+//
+//        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(100,100,50),whiteMaterial,new Object());
+//        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(70,700,100),whiteMaterial,new Object());
+//        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(-80,100,-50),whiteMaterial,new Object());
+//        mapGraph.addEdge(new Vertex(100,100,50),new Vertex(0,0,500),whiteMaterial,new Object());
+//        mapGraph.addEdge(new Vertex(70,700,100),new Vertex(0,0,500),whiteMaterial,new Object());
+//        mapGraph.addEdge(new Vertex(-80,100,-50),new Vertex(0,0,500),whiteMaterial,new Object());
 
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(100,100,50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(70,700,100),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(-80,100,-50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(100,100,50),new Vertex(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(70,700,100),new Vertex(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(-80,100,-50),new Vertex(0,0,500),whiteMaterial,new Object());
-//        Edge edge1 = mapGraph.createEdge(new Point3D(0,0,0),new Point3D(100,100,100),1);
-//        Edge edge2 = mapGraph.createEdge(new Point3D(100,100,100),new Point3D(200,600,900),1);
-//        Edge edge3 = mapGraph.createEdge(new Point3D(200,600,900),new Point3D(700,900,1200),1);
 
-//        world.getChildren().addAll(edge1,edge2,edge3);
+        Edge edge1 = mapGraph.createEdge(new Vertex(0,0,0),new Vertex(100,100,100));
+        mapGraph.addEdge(edge1,whiteMaterial,new Object());
+//        Edge edge2 = mapGraph.createEdge(new Vertex(100,100,100),new Vertex(200,600,900));
+//        Edge edge3 = mapGraph.createEdge(new Vertex(200,600,900),new Vertex(700,900,1200));
+
+        world.getChildren().addAll(edge1);
         world.getChildren().addAll(sphere);
 
-        world.getChildren().addAll(mapGraph.getEdges());
-        world.getChildren().addAll(mapGraph.getVertices());
+
+
+//        world.getChildren().addAll(mapGraph.getEdges());
+//        world.getChildren().addAll(mapGraph.getVertices());
 
         Random rn = new Random();
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
@@ -107,9 +112,24 @@ public class NetworkVis extends Application {
 //                Point3D newPoint =  startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
 //                world.getChildren().addAll(mapGraph.createEdge(new Vertex(startP),new Vertex(newPoint)));
 //                startP = newPoint;
+
+                double x=edge1.getEndPoint().getPoint3D().getX();
+                double y=edge1.getEndPoint().getPoint3D().getY();
+                double z=edge1.getEndPoint().getPoint3D().getZ();
+                double dx=rn.nextDouble()*10;
+                double dy=rn.nextDouble()*10;
+                double dz=rn.nextDouble()*10;
+
+//                mapGraph.transformEdge(edge1,edge1.getStartPoint().getPoint3D(),new Point3D(x+dx,y+dy,z+dz));
+
+//                edge1.setTranslateX(x+dx);
+
+
                 for(Vertex vertex: mapGraph.getVertices()){
-                    mapGraph.transformVertex(vertex,new Point3D(vertex.getTranslateX()+rn.nextDouble(),vertex.getTranslateY()+rn.nextDouble(),vertex.getTranslateZ()+rn.nextDouble()));
+                    mapGraph.transformVertex(vertex,new Point3D(vertex.getTranslateX()+rn.nextDouble()*10,vertex.getTranslateY()+rn.nextDouble()*10,vertex.getTranslateZ()+rn.nextDouble()*10));
                 }
+
+
 //                for(Node node : world.getChildren()) {
 //                    node.getTransforms().add(new Rotate(0.5, 0, 0, 0, Rotate.X_AXIS));
 //
