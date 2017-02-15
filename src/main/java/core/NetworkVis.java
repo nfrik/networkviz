@@ -81,7 +81,7 @@ public class NetworkVis extends Application {
         sphere.setTranslateZ(-50.0);
 //        world.getChildren().addAll(box);
 
-        Graph mapGraph = new Graph();
+        Graph mapGraph = new Graph(world);
 
         mapGraph.addEdge(new Vertex(0,0,0),new Vertex(100,100,50),whiteMaterial,new Object());
         mapGraph.addEdge(new Vertex(0,0,0),new Vertex(70,700,100),whiteMaterial,new Object());
@@ -97,15 +97,19 @@ public class NetworkVis extends Application {
         world.getChildren().addAll(sphere);
 
         world.getChildren().addAll(mapGraph.getEdges());
+        world.getChildren().addAll(mapGraph.getVertices());
 
         Random rn = new Random();
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
-            Vertex startP = new Vertex(0,0,0);
+            Point3D startP = new Point3D(0,0,0);
             @Override
             public void handle(ActionEvent event) {
-                Vertex newPoint = (Vertex) startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
-                world.getChildren().addAll(mapGraph.createEdge(startP,newPoint));
-                startP = newPoint;
+//                Point3D newPoint =  startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
+//                world.getChildren().addAll(mapGraph.createEdge(new Vertex(startP),new Vertex(newPoint)));
+//                startP = newPoint;
+                for(Vertex vertex: mapGraph.getVertices()){
+                    mapGraph.transformVertex(vertex,new Point3D(vertex.getTranslateX()+rn.nextDouble(),vertex.getTranslateY()+rn.nextDouble(),vertex.getTranslateZ()+rn.nextDouble()));
+                }
 //                for(Node node : world.getChildren()) {
 //                    node.getTransforms().add(new Rotate(0.5, 0, 0, 0, Rotate.X_AXIS));
 //
@@ -117,7 +121,7 @@ public class NetworkVis extends Application {
         }));
 
         loop.setCycleCount(Timeline.INDEFINITE);
-//        loop.play();
+        loop.play();
     }
 
 
@@ -173,18 +177,6 @@ public class NetworkVis extends Application {
 
 }
 
-
-class XformWorld extends Group {
-    final Translate t = new Translate(0.0, 0.0, 0.0);
-    final Rotate rx = new Rotate(0, 0, 0, 0, Rotate.X_AXIS);
-    final Rotate ry = new Rotate(0, 0, 0, 0, Rotate.Y_AXIS);
-    final Rotate rz = new Rotate(0, 0, 0, 0, Rotate.Z_AXIS);
-
-    public XformWorld() {
-        super();
-        this.getTransforms().addAll(t, rx, ry, rz);
-    }
-}
 
 class XformCamera extends Group {
     Point3D px = new Point3D(1.0, 0.0, 0.0);

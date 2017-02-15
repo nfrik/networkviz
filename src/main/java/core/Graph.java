@@ -1,5 +1,6 @@
 package core;
 
+import javafx.geometry.Point3D;
 import javafx.scene.paint.Material;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -13,9 +14,21 @@ public class Graph {
 
     private Map<Vertex, ArrayList<Edge>> adjMapList;
 
-    public Graph(){
+    private XformWorld world;
+
+    public Graph(XformWorld world){
         adjMapList = new HashMap<Vertex,ArrayList<Edge>>();
+        setWorld(world);
     }
+
+    public XformWorld getWorld() {
+        return world;
+    }
+
+    public void setWorld(XformWorld world) {
+        this.world = world;
+    }
+
 
     /**
      * Get the number of vertices (road intersections) in the graph
@@ -104,6 +117,7 @@ public class Graph {
             ArrayList<Edge> tempList = adjMapList.get(from);
             Edge se = createEdge(from,to);
 
+            //TODO find better way to assign material
             se.setMaterial(material);
             se.setUniqueProperties(uniqueProperties);
 
@@ -126,7 +140,7 @@ public class Graph {
         return outNbs;
     }
 
-    public List<Edge> neighborEdgesOf(Vertex of){
+    public List<Edge> outNeigborEdges(Vertex of){
         List<Edge> outNbs = new ArrayList<Edge>();
         if(!adjMapList.containsKey(of)){
             return null;
@@ -175,14 +189,14 @@ public class Graph {
     }
 
     public Edge createEdge(Vertex point1, Vertex point2) {
-        Vertex yAxis = new Vertex(0, 1, 0);
-        Vertex diff = (Vertex) point2.subtract(point1);
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = point2.getPoint3D().subtract(point1.getPoint3D());// subtract(point1);
         double height = diff.magnitude();
 
-        Vertex mid = (Vertex) point2.midpoint(point1);
+        Point3D mid = point2.getPoint3D().midpoint(point1.getPoint3D());
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Vertex axisOfRotation = (Vertex) diff.crossProduct(yAxis);
+        Point3D axisOfRotation =  diff.crossProduct(yAxis);
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
@@ -194,18 +208,38 @@ public class Graph {
     }
 
     public void transformEdge(Edge edge, Vertex point1, Vertex point2){
-        Vertex yAxis = new Vertex(0, 1, 0);
-        Vertex diff = (Vertex) point2.subtract(point1);
-        double height = diff.magnitude();
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = point2.getPoint3D().subtract(point1.getPoint3D());
 
-        Vertex mid = (Vertex) point2.midpoint(point1);
+        Point3D mid = point2.getPoint3D().midpoint(point1.getPoint3D());
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Vertex axisOfRotation = (Vertex) diff.crossProduct(yAxis);
+        Point3D axisOfRotation =  diff.crossProduct(yAxis);
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
         edge.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+    }
+
+    public void transformVertex(Vertex vertex, Point3D destination){
+        List<Edge> edges = outNeigborEdges(vertex);
+
+        edges.addAll(inNeighborsEdges(vertex));
+
+        vertex.setTranslateX(destination.getX());
+        vertex.setTranslateY(destination.getY());
+        vertex.setTranslateZ(destination.getZ());
+
+        if(edges!=null && edges.size()>0){
+//            for(Edge ed: edges){
+//                if(ed.getEndPoint().equals(vertex)){
+//                    transformEdge(ed,ed.getStartPoint(),vertex);
+//                }else {
+//                    transformEdge(ed,vertex,ed.getEndPoint());
+//                }
+//            }
+        }
+
     }
 
 }

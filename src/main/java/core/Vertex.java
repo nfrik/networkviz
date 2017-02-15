@@ -10,40 +10,75 @@ import javafx.scene.shape.Sphere;
 /**
  * Created by NF on 2/13/2017.
  */
-public class Vertex extends Point3D {
+public class Vertex extends Sphere {
 
-    public Sphere getSphere() {
-        return sphere;
+
+    public Point3D getPoint3D(){
+        return new Point3D(super.getTranslateX(),super.getTranslateY(),super.getTranslateZ());
     }
 
-    public void setSphere(Sphere sphere) {
-        this.sphere = sphere;
+    public Vertex(double x, double y, double z){
+        super(5);
+        super.setTranslateX(x);
+        super.setTranslateY(y);
+        super.setTranslateZ(z);
     }
 
-    private Sphere sphere;
-    private final double DEFAULT_RADIUS = 6;
-
-    /**
-     * Creates a new instance of {@code Point3D}.
-     *
-     * @param x The X coordinate of the {@code Point3D}
-     * @param y The Y coordinate of the {@code Point3D}
-     * @param z The Z coordinate of the {@code Point3D}
-     */
-    public Vertex(@NamedArg("x") double x, @NamedArg("y") double y, @NamedArg("z") double z) {
-        super(x, y, z);
-        sphere = new Sphere(DEFAULT_RADIUS);
-
-        //TODO: find a better way to provide material
-        PhongMaterial redMaterial = (new PhongMaterial());
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
-
-        sphere.setMaterial(redMaterial);
-        sphere.setTranslateX(x);
-        sphere.setTranslateY(y);
-        sphere.setTranslateZ(z);
+    public Vertex(Point3D translate){
+        super(5);
+        super.setTranslateX(translate.getX());
+        super.setTranslateY(translate.getY());
+        super.setTranslateZ(translate.getZ());
     }
+
+    @Override
+    public boolean equals(Object v){
+        if(v instanceof Vertex){
+            return this.getPoint3D().distance(((Vertex) v).getPoint3D())==0;
+        }else if (v instanceof Point3D){
+            return this.getPoint3D().distance((Point3D) v) == 0;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return getPoint3D().hashCode();
+    }
+
+//    public Sphere getSphere() {
+//        return sphere;
+//    }
+//
+//    public void setSphere(Sphere sphere) {
+//        this.sphere = sphere;
+//    }
+//
+//    private Sphere sphere;
+//    private final double DEFAULT_RADIUS = 6;
+//
+//    /**
+//     * Creates a new instance of {@code Point3D}.
+//     *
+//     * @param x The X coordinate of the {@code Point3D}
+//     * @param y The Y coordinate of the {@code Point3D}
+//     * @param z The Z coordinate of the {@code Point3D}
+//     */
+//    public Vertex(@NamedArg("x") double x, @NamedArg("y") double y, @NamedArg("z") double z) {
+//        super(x, y, z);
+//        sphere = new Sphere(DEFAULT_RADIUS);
+//
+//        //TODO: find a better way to provide material
+//        PhongMaterial redMaterial = (new PhongMaterial());
+//        redMaterial.setDiffuseColor(Color.DARKRED);
+//        redMaterial.setSpecularColor(Color.RED);
+//
+//        sphere.setMaterial(redMaterial);
+//        sphere.setTranslateX(x);
+//        sphere.setTranslateY(y);
+//        sphere.setTranslateZ(z);
+//    }
 
 
 }
