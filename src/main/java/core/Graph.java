@@ -240,23 +240,25 @@ public class Graph {
         System.out.println("Point1"+point1);
         System.out.println("Point2"+point2);
 
-        Point3D axis = edge.getEndPoint().getPoint3D().subtract(edge.getStartPoint().getPoint3D()).normalize();
+//        Point3D axis = edge.getEndPoint().getPoint3D().subtract(edge.getStartPoint().getPoint3D()).normalize();
+        Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = point2.subtract(point1);
 
 //        Point3D mid = point2.midpoint(point1).add(edge.getEndPoint().getPoint3D().midpoint(edge.getStartPoint().getPoint3D()));
         Point3D mid = point2.midpoint(point1);
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Point3D axisOfRotation =  diff.crossProduct(axis);
-        double angle = Math.acos(diff.normalize().dotProduct(axis));
+        Point3D axisOfRotation =  diff.crossProduct(yAxis);
+        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
 //        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), pivotPoint.getX(),pivotPoint.getY(),pivotPoint.getZ(), axisOfRotation);
 
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), mid.getX(),mid.getY(),mid.getZ(), axisOfRotation);
+
+        while(edge.getTransforms().size()>0){
+            edge.getTransforms().remove(0);
+        }
 
         edge.setHeight(diff.magnitude());
-        for(int i=0;i<edge.getTransforms().size();i++){
-            edge.getTransforms().remove(i);
-        }
         edge.getTransforms().addAll(rotateAroundCenter,moveToMidpoint);
 
         edge.getStartPoint().setTranslateX(point1.getX());
