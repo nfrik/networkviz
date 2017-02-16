@@ -234,21 +234,30 @@ public class Graph {
         return line;
     }
 
-    public void transformEdge(Edge edge, Point3D pivotPoint, Point3D point1, Point3D point2){
+    public void transformEdge(Edge edge, Point3D point1, Point3D point2){
 //        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D yAxis = edge.getEndPoint().getPoint3D().subtract(edge.getStartPoint().getPoint3D()).normalize();
+//        System.out.println("Pivot"+pivotPoint);
+        System.out.println("Point1"+point1);
+        System.out.println("Point2"+point2);
+
+        Point3D axis = edge.getEndPoint().getPoint3D().subtract(edge.getStartPoint().getPoint3D()).normalize();
         Point3D diff = point2.subtract(point1);
 
 //        Point3D mid = point2.midpoint(point1).add(edge.getEndPoint().getPoint3D().midpoint(edge.getStartPoint().getPoint3D()));
         Point3D mid = point2.midpoint(point1);
         Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
 
-        Point3D axisOfRotation =  diff.crossProduct(yAxis);
-        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), pivotPoint.getX(),pivotPoint.getY(),pivotPoint.getZ(), axisOfRotation);
+        Point3D axisOfRotation =  diff.crossProduct(axis);
+        double angle = Math.acos(diff.normalize().dotProduct(axis));
+//        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), pivotPoint.getX(),pivotPoint.getY(),pivotPoint.getZ(), axisOfRotation);
+
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
         edge.setHeight(diff.magnitude());
-        edge.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+        for(int i=0;i<edge.getTransforms().size();i++){
+            edge.getTransforms().remove(i);
+        }
+        edge.getTransforms().addAll(rotateAroundCenter,moveToMidpoint);
 
         edge.getStartPoint().setTranslateX(point1.getX());
         edge.getStartPoint().setTranslateY(point1.getY());
@@ -272,9 +281,9 @@ public class Graph {
         if(edges!=null && edges.size()>0){
             for(Edge ed: edges){
                 if(ed.getEndPoint().equals(vertex)){//Change end point
-                    transformEdge(ed,ed.getStartPoint().getPoint3D(),ed.getStartPoint().getPoint3D(),destination);
+                    transformEdge(ed,ed.getStartPoint().getPoint3D(),destination);
                 }else {//Change start point
-                    transformEdge(ed,ed.getEndPoint().getPoint3D(),destination,ed.getEndPoint().getPoint3D());
+                    transformEdge(ed,destination,ed.getEndPoint().getPoint3D());
                 }
             }
 

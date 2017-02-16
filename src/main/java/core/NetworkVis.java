@@ -91,7 +91,7 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(new Vertex(-80,100,-50),new Vertex(0,0,500),whiteMaterial,new Object());
 
 
-        Edge edge1 = mapGraph.createEdge(new Vertex(0,0,0),new Vertex(100,100,100));
+        Edge edge1 = mapGraph.createEdge(new Vertex(10,10,10),new Vertex(100,100,100));
         mapGraph.addEdge(edge1,whiteMaterial,new Object());
 //        Edge edge2 = mapGraph.createEdge(new Vertex(100,100,100),new Vertex(200,600,900));
 //        Edge edge3 = mapGraph.createEdge(new Vertex(200,600,900),new Vertex(700,900,1200));
@@ -105,16 +105,18 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(mapGraph.getVertices());
 
         Random rn = new Random();
+
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
+            double alpha = 0;
             @Override
             public void handle(ActionEvent event) {
 //                Point3D newPoint =  startP.add((rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100,(rn.nextDouble()-0.5)*100);
 //                world.getChildren().addAll(mapGraph.createEdge(new Vertex(startP),new Vertex(newPoint)));
 //                startP = newPoint;
 
-                double x=edge1.getEndPoint().getPoint3D().getX();
-                double y=edge1.getEndPoint().getPoint3D().getY();
+                double x=10*Math.sin(alpha);
+                double y=10*Math.cos(alpha);
                 double z=edge1.getEndPoint().getPoint3D().getZ();
                 double dx=rn.nextDouble()*10;
                 double dy=rn.nextDouble()*10;
@@ -126,7 +128,25 @@ public class NetworkVis extends Application {
 
 
                 for(Vertex vertex: mapGraph.getVertices()){
+
                     mapGraph.transformVertex(vertex,new Point3D(vertex.getTranslateX()+rn.nextDouble()*10,vertex.getTranslateY()+rn.nextDouble()*10,vertex.getTranslateZ()+rn.nextDouble()*10));
+//                    Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(0.1), new Point3D(1,0,0));
+//                    Translate translate = new Translate(x,y,0);
+////                    edge1.getTransforms().addAll(translate);
+////                    edge1.setTranslateX(x);
+////                    edge1.setTranslateY(y);
+//                    edge1.setRotationAxis(new Point3D(1,0,0));
+//                    edge1.setRotate(alpha);
+//                    edge1.getTransforms().removeAll();
+//                    alpha+=0.01;
+//                    if(alpha>Math.PI*6){
+//                        alpha=0;
+//                    }
+//                    Translate moveToMidpoint = new Translate(dx, dy, dz);
+//                    edge1.setTranslateX(dx);
+//                    edge1.setTranslateX(dy);
+//                    edge1.setTranslateX(dz);
+//                    edge1.getTransforms().addAll(moveToMidpoint);
                 }
 
 

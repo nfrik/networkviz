@@ -42,10 +42,10 @@ public class Vertex extends Sphere {
         return false;
     }
 
-    @Override
-    public int hashCode(){
-        return getPoint3D().hashCode();
-    }
+//    @Override
+//    public int hashCode(){
+//        return getPoint3D().hashCode();
+//    }
 
 //    public Sphere getSphere() {
 //        return sphere;
