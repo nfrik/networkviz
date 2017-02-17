@@ -22,6 +22,12 @@ public class Vertex extends Sphere {
         super.setTranslateX(x);
         super.setTranslateY(y);
         super.setTranslateZ(z);
+
+        //TODO: find a better way to provide material
+        PhongMaterial redMaterial = (new PhongMaterial());
+        redMaterial.setDiffuseColor(Color.DARKRED);
+        redMaterial.setSpecularColor(Color.RED);
+        super.setMaterial(redMaterial);
     }
 
     public Vertex(Point3D translate){
