@@ -32,7 +32,7 @@ public class NetworkVis extends Application {
     final XformCamera cameraXform = new XformCamera();
     private static final double CAMERA_INITIAL_DISTANCE = -1000;
     private static final double CAMERA_NEAR_CLIP = 0.1;
-    private static final double CAMERA_FAR_CLIP = 10000.0;
+    private static final double CAMERA_FAR_CLIP = 100000.0;
     private static final double AXIS_LENGTH = 250.0;
     double mousePosX, mousePosY, mouseOldX, mouseOldY, mouseDeltaX, mouseDeltaY;
     double mouseFactorX, mouseFactorY;
@@ -46,7 +46,7 @@ public class NetworkVis extends Application {
         buildBodySystem();
         buildAxes();
         Scene scene = new Scene(root, 800, 600, true);
-        scene.setFill(Color.GREY);
+        scene.setFill(Color.BLACK);
         handleMouse(scene);
         primaryStage.setTitle("TrafoTest");
         primaryStage.setScene(scene);
@@ -81,15 +81,23 @@ public class NetworkVis extends Application {
         sphere.setTranslateZ(-50.0);
 //        world.getChildren().addAll(box);
 
-        Graph mapGraph = new Graph(world);
+        Graph mapGraph = new Graph();
 //
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(100,100,50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(70,700,100),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(0,0,0),new Vertex(-80,100,-50),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(100,100,50),new Vertex(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(70,700,100),new Vertex(0,0,500),whiteMaterial,new Object());
-        mapGraph.addEdge(new Vertex(-80,100,-50),new Vertex(0,0,500),whiteMaterial,new Object());
+//        Vertex v1=new Vertex(0,0,0);
+//        Vertex v2=new Vertex(100,100,50);
+//        Vertex v3=new Vertex(70,700,100);
+//        Vertex v4=new Vertex(-80,100,-50);
+//        Vertex v5=new Vertex(0,0,500);
+//
+//
+//        mapGraph.addEdge(v1,v2, whiteMaterial,new Object());
+//        mapGraph.addEdge(v1,v3,whiteMaterial,new Object());
+//        mapGraph.addEdge(v1,v4,whiteMaterial,new Object());
+//        mapGraph.addEdge(v2,v5,whiteMaterial,new Object());
+//        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
+//        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
+        mapGraph.generateRandomGraph(30,0.9,whiteMaterial);
 
 //        Edge edge1 = mapGraph.createEdge(new Vertex(10,10,10),new Vertex(100,100,100));
 //        mapGraph.addEdge(edge1,whiteMaterial,new Object());
@@ -127,9 +135,19 @@ public class NetworkVis extends Application {
 
                 startP = new Point3D(80+dx,80+dy,80+dz);
 //                mapGraph.transformEdge(edge1,edge1.getStartPoint().getPoint3D(),startP);
-                for(Vertex vertex: mapGraph.getVertices()){
 
-                    mapGraph.transformVertex(vertex,new Point3D(80+(rn.nextDouble()-0.5)*10,(rn.nextDouble()-0.5)*10,(rn.nextDouble()-0.5)*10));
+//                mapGraph.transformVertexRandomDelta(v1,1);
+//                mapGraph.transformVertexRandomDelta(v2,1);
+//                mapGraph.transformVertexRandomDelta(v3,1);
+//                mapGraph.transformVertexRandomDelta(v4,1);
+//                mapGraph.transformVertexRandomDelta(v5,1);
+
+
+                for(Vertex vertex: mapGraph.getVertices()){
+                    mapGraph.transformVertexRandomDelta(vertex,1);
+//                    mapGraph.transformVertex(vertex,new Point3D(80+(rn.nextDouble()-0.5)*10,(rn.nextDouble()-0.5)*10,(rn.nextDouble()-0.5)*10));
+
+
 //                    Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(0.1), new Point3D(1,0,0));
 //                    Translate translate = new Translate(x,y,0);
 ////                    edge1.getTransforms().addAll(translate);

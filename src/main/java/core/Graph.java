@@ -1,6 +1,7 @@
 package core;
 
 import javafx.geometry.Point3D;
+import javafx.scene.Node;
 import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.transform.Rotate;
@@ -13,13 +14,23 @@ import java.util.*;
  */
 public class Graph {
 
+    public Map<Vertex, ArrayList<Edge>> getAdjMapList() {
+        return adjMapList;
+    }
+
+    public void setAdjMapList(Map<Vertex, ArrayList<Edge>> adjMapList) {
+        this.adjMapList = adjMapList;
+    }
+
     private Map<Vertex, ArrayList<Edge>> adjMapList;
 
     private XformWorld world;
 
-    public Graph(XformWorld world){
+    private Random rn;
+
+    public Graph(){
         adjMapList = new HashMap<Vertex,ArrayList<Edge>>();
-        setWorld(world);
+        rn = new Random();
     }
 
     public XformWorld getWorld() {
@@ -254,13 +265,13 @@ public class Graph {
 
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), mid.getX(),mid.getY(),mid.getZ(), axisOfRotation);
 
-        while(edge.getTransforms().size()>0){
-            edge.getTransforms().remove(0);
-        }
+        removeAllTransforms(edge);
 
         edge.setHeight(diff.magnitude());
         edge.getTransforms().addAll(rotateAroundCenter,moveToMidpoint);
 
+        removeAllTransforms(edge.getStartPoint());
+        removeAllTransforms(edge.getEndPoint());
         edge.getStartPoint().setTranslateX(point1.getX());
         edge.getStartPoint().setTranslateY(point1.getY());
         edge.getStartPoint().setTranslateZ(point1.getZ());
@@ -270,13 +281,19 @@ public class Graph {
         edge.getEndPoint().setTranslateZ(point2.getZ());
     }
 
+    private void removeAllTransforms(Node node){
+        while(node.getTransforms().size()>0){
+            node.getTransforms().remove(0);
+        }
+    }
+
     public void transformVertex(Vertex vertex, Point3D destination){
         List<Edge> edges = outNeigborEdges(vertex);
 
         List<Edge> inEdges = inNeighborsEdges(vertex);
 
         if(inEdges!=null) {
-            edges.addAll(inNeighborsEdges(vertex));
+            edges.addAll(inEdges);
         }
 
 
@@ -291,6 +308,33 @@ public class Graph {
 
         }
 
+    }
+
+    public void transformVertexRandomDelta(Vertex vertex, double delta){
+        transformVertex(vertex,new Point3D(vertex.getPoint3D().getX()+(rn.nextDouble()-0.5)*delta,vertex.getPoint3D().getY()+(rn.nextDouble()-0.5)*delta,vertex.getPoint3D().getZ()+(rn.nextDouble()-0.5)*delta));
+    }
+
+    public void transformVertexRandomDelta(List<Vertex> vertexList, double delta){
+        for(Vertex vertex : vertexList) {
+            transformVertex(vertex, new Point3D(vertex.getPoint3D().getX() + (rn.nextDouble() - 0.5) * delta, vertex.getPoint3D().getY() + (rn.nextDouble() - 0.5) * delta, vertex.getPoint3D().getZ() + (rn.nextDouble() - 0.5) * delta));
+        }
+    }
+
+    public void generateRandomGraph(int n, double sparcity, PhongMaterial material){
+        if(n>0) {
+
+            double r = n*n;
+            for(int i=0;i<n;i++){
+                addVertex(new Vertex((rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r));
+            }
+            for(Vertex vertex1 : getVertices()){
+                for(Vertex vertex2 : getVertices()){
+                    if((vertex1!=vertex2) && (rn.nextDouble()>sparcity)){
+                        addEdge(vertex1,vertex2,material,null);
+                    }
+                }
+            }
+        }
     }
 
 }
