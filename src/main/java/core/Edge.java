@@ -25,7 +25,6 @@ class Edge extends Box {
             super(radius,height,radius);
             setStartPoint(point1);
             setEndPoint(point2);
-//            setDrawMode(DrawMode.LINE);
 
 
 //        super(radius, height);

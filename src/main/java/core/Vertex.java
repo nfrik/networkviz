@@ -18,20 +18,20 @@ public class Vertex extends Sphere {
     }
 
     public Vertex(double x, double y, double z){
-        super(10);
+        super(100);
         super.setTranslateX(x);
         super.setTranslateY(y);
         super.setTranslateZ(z);
 
         //TODO: find a better way to provide material
         PhongMaterial redMaterial = (new PhongMaterial());
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
+        redMaterial.setDiffuseColor(Color.YELLOW);
+        redMaterial.setSpecularColor(Color.AQUA);
         super.setMaterial(redMaterial);
     }
 
     public Vertex(Point3D translate){
-        super(10);
+        super(100);
         super.setTranslateX(translate.getX());
         super.setTranslateY(translate.getY());
         super.setTranslateZ(translate.getZ());

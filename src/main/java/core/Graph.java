@@ -315,7 +315,7 @@ public class Graph {
     public void generateRandomGraph(int n, double sparcity, PhongMaterial material){
         if(n>0) {
 
-            double r = n*n;
+            double r = Math.pow(n,1.4);
             for(int i=0;i<n;i++){
                 addVertex(new Vertex((rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r));
             }

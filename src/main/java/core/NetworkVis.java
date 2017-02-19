@@ -93,13 +93,6 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        float[] points ={
-          0,0,0,
-          100,100,100
-        };
-        TriangleMesh mesh = new TriangleMesh();
-        mesh.getPoints().setAll(points);
-
         Graph mapGraph = new Graph();
 //
 //        Vertex v1=new Vertex(0,0,0);
@@ -116,7 +109,7 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-        mapGraph.generateRandomGraph(70,0.94,whiteMaterial);
+        mapGraph.generateRandomGraph(1000,0.95,whiteMaterial);
 
 //        Edge edge1 = mapGraph.createEdge(new Vertex(10,10,10),new Vertex(100,100,100));
 //        mapGraph.addEdge(edge1,whiteMaterial,new Object());
