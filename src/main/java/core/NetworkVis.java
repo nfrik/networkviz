@@ -17,7 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Sphere;
+import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
@@ -51,13 +53,13 @@ public class NetworkVis extends Application {
         root.getChildren().add(world);
         root.setDepthTest(DepthTest.ENABLE);
         buildCamera();
-        buildBodySystem();
         buildAxes();
+        buildBodySystem();
         Scene scene = new Scene(root, 800, 600, true);
         scene.setFill(Color.BLACK);
         handleMouse(scene);
         handleKeyboard(scene);
-        primaryStage.setTitle("TrafoTest");
+        primaryStage.setTitle("NetworkVis");
         primaryStage.setScene(scene);
         primaryStage.show();
         scene.setCamera(camera);
@@ -90,6 +92,14 @@ public class NetworkVis extends Application {
         sphere.setTranslateZ(-50.0);
 //        world.getChildren().addAll(box);
 
+
+        float[] points ={
+          0,0,0,
+          100,100,100
+        };
+        TriangleMesh mesh = new TriangleMesh();
+        mesh.getPoints().setAll(points);
+
         Graph mapGraph = new Graph();
 //
 //        Vertex v1=new Vertex(0,0,0);
@@ -106,7 +116,7 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-        mapGraph.generateRandomGraph(30,0.94,whiteMaterial);
+        mapGraph.generateRandomGraph(70,0.94,whiteMaterial);
 
 //        Edge edge1 = mapGraph.createEdge(new Vertex(10,10,10),new Vertex(100,100,100));
 //        mapGraph.addEdge(edge1,whiteMaterial,new Object());

@@ -238,7 +238,7 @@ public class Graph {
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
-        Edge line = new Edge(1, height, point1, point2);
+        Edge line = new Edge(2, height, point1, point2);
 
         line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 

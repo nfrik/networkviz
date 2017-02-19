@@ -1,11 +1,14 @@
 package core;
 
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.Shape3D;
 
 /**
  * Created by NF on 2/13/2017.
  */
-class Edge extends Cylinder {
+class Edge extends Box {
 
     private String name;
     private Double resistance;
@@ -14,13 +17,21 @@ class Edge extends Cylinder {
     private Vertex endPoint;
 
     public Edge(double radius, double height) {
-        super(radius, height);
+//        super(radius, height);
+        super(radius,height,radius);
     }
 
     public Edge(double radius, double height, Vertex point1, Vertex point2) {
-        super(radius, height);
-        setStartPoint(point1);
-        setEndPoint(point2);
+            super(radius,height,radius);
+            setStartPoint(point1);
+            setEndPoint(point2);
+//            setDrawMode(DrawMode.LINE);
+
+
+//        super(radius, height);
+//        setStartPoint(point1);
+//        setEndPoint(point2);
+//        setDrawMode(DrawMode.LINE);
     }
 
     public String getName() {

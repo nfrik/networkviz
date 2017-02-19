@@ -18,7 +18,7 @@ public class Vertex extends Sphere {
     }
 
     public Vertex(double x, double y, double z){
-        super(5);
+        super(10);
         super.setTranslateX(x);
         super.setTranslateY(y);
         super.setTranslateZ(z);
@@ -31,7 +31,7 @@ public class Vertex extends Sphere {
     }
 
     public Vertex(Point3D translate){
-        super(5);
+        super(10);
         super.setTranslateX(translate.getX());
         super.setTranslateY(translate.getY());
         super.setTranslateZ(translate.getZ());
