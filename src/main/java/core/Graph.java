@@ -14,6 +14,42 @@ import java.util.*;
  */
 public class Graph {
 
+    private Map<Vertex, ArrayList<Edge>> adjMapList;
+
+    private XformWorld world;
+
+    private Random rn;
+
+    private PhongMaterial edgeDefaultMaterial = new PhongMaterial();
+
+    private PhongMaterial vertexDefaultMaterial = new PhongMaterial();
+
+    private double vertexDefaultRadius = 100;
+
+    public double getVertexDefaultRadius() {
+        return vertexDefaultRadius;
+    }
+
+    public void setVertexDefaultRadius(double defaultRadius) {
+        this.vertexDefaultRadius = defaultRadius;
+    }
+
+    public PhongMaterial getVertexDefaultMaterial() {
+        return vertexDefaultMaterial;
+    }
+
+    public void setVertexDefaultMaterial(PhongMaterial vertexDefaultMaterial) {
+        this.vertexDefaultMaterial = vertexDefaultMaterial;
+    }
+
+    public PhongMaterial getEdgeDefaultMaterial() {
+        return edgeDefaultMaterial;
+    }
+
+    public void setEdgeDefaultMaterial(PhongMaterial edgeDefaultMaterial) {
+        this.edgeDefaultMaterial = edgeDefaultMaterial;
+    }
+
     public Map<Vertex, ArrayList<Edge>> getAdjMapList() {
         return adjMapList;
     }
@@ -21,12 +57,6 @@ public class Graph {
     public void setAdjMapList(Map<Vertex, ArrayList<Edge>> adjMapList) {
         this.adjMapList = adjMapList;
     }
-
-    private Map<Vertex, ArrayList<Edge>> adjMapList;
-
-    private XformWorld world;
-
-    private Random rn;
 
     public Graph(){
         adjMapList = new HashMap<Vertex,ArrayList<Edge>>();
@@ -112,7 +142,7 @@ public class Graph {
         return false;
     }
 
-    public void addEdge(Vertex from, Vertex to, Material material, Object uniqueProperties) throws IllegalArgumentException {
+    public void addEdge(Vertex from, Vertex to, PhongMaterial material, Object uniqueProperties) throws IllegalArgumentException {
 
 //        if(!adjMapList.containsKey(from) || !adjMapList.containsKey(to)) {
 //            throw new IllegalArgumentException();
@@ -131,6 +161,7 @@ public class Graph {
 
             //TODO find better way to assign material
             se.setMaterial(material);
+
             se.setUniqueProperties(uniqueProperties);
 
             tempList.add(se);
@@ -317,7 +348,7 @@ public class Graph {
 
             double r = Math.pow(n,1.4);
             for(int i=0;i<n;i++){
-                addVertex(new Vertex((rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r));
+                addVertex(new Vertex((rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,getVertexDefaultRadius(),getVertexDefaultMaterial()));
             }
             for(Vertex vertex1 : getVertices()){
                 for(Vertex vertex2 : getVertices()){

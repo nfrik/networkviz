@@ -78,7 +78,7 @@ public class NetworkVis extends Application {
 
     private void buildBodySystem() {
         PhongMaterial whiteMaterial = new PhongMaterial();
-        whiteMaterial.setDiffuseColor(Color.WHITE);
+        whiteMaterial.setDiffuseColor(Color.YELLOW);
         whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
         Box box = new Box(400, 200, 100);
         box.setMaterial(whiteMaterial);
@@ -94,6 +94,9 @@ public class NetworkVis extends Application {
 
 
         Graph mapGraph = new Graph();
+        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
+        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.GOLD);
+        mapGraph.setVertexDefaultRadius(50);
 //
 //        Vertex v1=new Vertex(0,0,0);
 //        Vertex v2=new Vertex(100,100,50);
@@ -109,7 +112,7 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-        mapGraph.generateRandomGraph(1000,0.95,whiteMaterial);
+        mapGraph.generateRandomGraph(300,0.95,whiteMaterial);
 
 //        Edge edge1 = mapGraph.createEdge(new Vertex(10,10,10),new Vertex(100,100,100));
 //        mapGraph.addEdge(edge1,whiteMaterial,new Object());
@@ -119,8 +122,6 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(edge1);
 //        world.getChildren().addAll(sphere);
 
-
-
         world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
 
@@ -129,25 +130,31 @@ public class NetworkVis extends Application {
 
         Random rn = new Random();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             @Override
             public void handle(ActionEvent event) {
 
+                Vertex v = (Vertex) mapGraph.getVertices().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
+                Edge e = (Edge) mapGraph.getEdges().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
+                PhongMaterial pm = new PhongMaterial();
+                pm.setDiffuseColor(new Color(rn.nextDouble(),rn.nextDouble(),rn.nextDouble(),1));
+                v.setMaterial(pm);
+                e.setMaterial(pm);
 
 
-                for(Vertex vertex: mapGraph.getVertices()){
-                    mapGraph.transformVertexRandomDelta(vertex,1);
-
-
-                }
+//                for(Vertex vertex: mapGraph.getVertices()){
+//                    mapGraph.transformVertexRandomDelta(vertex,1);
+//
+//
+//                }
 
             }
         }));
 
         loop.setCycleCount(Timeline.INDEFINITE);
-//        loop.play();
+        loop.play();
     }
 
 

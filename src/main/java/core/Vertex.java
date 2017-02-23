@@ -17,24 +17,36 @@ public class Vertex extends Sphere {
         return new Point3D(super.getTranslateX(),super.getTranslateY(),super.getTranslateZ());
     }
 
-    public Vertex(double x, double y, double z){
-        super(100);
+//    public Vertex(double x, double y, double z){
+//        super(100);
+//
+//
+//
+//        //TODO: find a better way to provide material
+//        PhongMaterial redMaterial = (new PhongMaterial());
+//        redMaterial.setDiffuseColor(Color.YELLOW);
+//        redMaterial.setSpecularColor(Color.AQUA);
+//
+//
+//        super.setMaterial(redMaterial);
+//    }
+
+    public Vertex(double x, double y, double z, double radius, PhongMaterial material ){
+        super(radius);
         super.setTranslateX(x);
         super.setTranslateY(y);
         super.setTranslateZ(z);
-
-        //TODO: find a better way to provide material
-        PhongMaterial redMaterial = (new PhongMaterial());
-        redMaterial.setDiffuseColor(Color.YELLOW);
-        redMaterial.setSpecularColor(Color.AQUA);
-        super.setMaterial(redMaterial);
+        super.setMaterial(material);
     }
 
-    public Vertex(Point3D translate){
-        super(100);
-        super.setTranslateX(translate.getX());
-        super.setTranslateY(translate.getY());
-        super.setTranslateZ(translate.getZ());
+    public Vertex(Point3D point){
+        super.setTranslateX(point.getX());
+        super.setTranslateY(point.getY());
+        super.setTranslateZ(point.getZ());
+    }
+
+    public Vertex(Point3D point, double radius, PhongMaterial material){
+        this(point.getX(),point.getY(),point.getZ(),radius,material);
     }
 
     @Override
