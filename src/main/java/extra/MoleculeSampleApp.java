@@ -37,6 +37,7 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.scene.DepthTest;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -247,9 +248,9 @@ public class MoleculeSampleApp extends Application {
         bond2Cylinder.setRotate(90.0);
 
 
-        for (int i = 0; i < 20; i++) {
-            for (int j = 0; j < 20; j++) {
-                for (int k = 0; k < 20; k++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
                     Cylinder cylinder = new Cylinder(1, 30);
                     cylinder.setMaterial(greyMaterial);
                     cylinder.setTranslateX((i - 2) * 10.0);
@@ -315,7 +316,7 @@ public class MoleculeSampleApp extends Application {
                     c.setRotationAxis(Rotate.Z_AXIS);
                     c.setRotate(c.getRotate() + rn.nextDouble() - 0.5);
 
-//                    checkShapeIntersection(c,cylinders);
+                    checkShapeIntersection(c,cylinders);
                 }
 //                bond1Cylinder.setTranslateX(bond1Cylinder.getTranslateX()+deltaX);
 //                System.out.println(deltaX);
@@ -354,20 +355,28 @@ public class MoleculeSampleApp extends Application {
 
     private void checkShapeIntersection(Cylinder block, ArrayList<Cylinder> cylinders) {
         boolean collisionDetected = false;
+        Point3D bloc = new Point3D(block.getTranslateX(),block.getTranslateY(),block.getTranslateZ());
         for (Cylinder static_bloc : cylinders) {
             if (static_bloc != block) {
 //                static_bloc.setFill(Color.GREEN);
-                static_bloc.setMaterial(greyMaterial);
+
 
 //                Cylinder intersect = Cylinder.intersect(block, static_bloc);
 
 //                Shape intersect = Shape.intersect(block, static_bloc);
 
-                if (block.getBoundsInParent().intersects(static_bloc.getBoundsInParent())) {
-                    collisionDetected = true;
-                    block.setMaterial(redMaterial);
-                    static_bloc.setMaterial(redMaterial);
-                }
+                Point3D sbloc = new Point3D(static_bloc.getTranslateX(),static_bloc.getTranslateY(),static_bloc.getTranslateZ());
+
+//                if(sbloc.distance(bloc)<16) {
+                    if (block.getBoundsInParent().intersects(static_bloc.getBoundsInParent())) {
+                        collisionDetected = true;
+                        block.setMaterial(redMaterial);
+                        static_bloc.setMaterial(redMaterial);
+                    }else{
+                        static_bloc.setMaterial(greyMaterial);
+//                        block.setMaterial(greyMaterial);
+                    }
+//                }
             }
         }
 

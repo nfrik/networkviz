@@ -2,7 +2,6 @@ package core;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
-import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
@@ -23,6 +22,14 @@ public class Graph {
     private PhongMaterial edgeDefaultMaterial = new PhongMaterial();
 
     private PhongMaterial vertexDefaultMaterial = new PhongMaterial();
+
+    private Point3D yAxis = new Point3D(0,1,0);
+
+    private Point3D xAxis = new Point3D(1,0,0);
+
+    private Point3D zAxis = new Point3D(0,0,1);
+
+    private Point3D origin = new Point3D(0,0,0);
 
     private double vertexDefaultRadius = 100;
 
@@ -276,7 +283,7 @@ public class Graph {
         return line;
     }
 
-    public void transformEdge(Edge edge, Point3D point1, Point3D point2){
+    public void translateEdge(Edge edge, Point3D point1, Point3D point2){
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = point2.subtract(point1);
 
@@ -304,6 +311,39 @@ public class Graph {
         edge.getEndPoint().setTranslateZ(point2.getZ());
     }
 
+    public void rotateEdgeAroundCenter(Edge edge, double theta, double phi){
+
+        double r  = edge.getHeight()/2;
+        Point3D normdir = new Point3D(Math.sin(theta)*Math.cos(phi),Math.sin(theta)*Math.sin(phi),Math.cos(theta));
+
+        Point3D mid = edge.getEndPoint().getPoint3D().midpoint(edge.getStartPoint().getPoint3D());
+
+        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
+
+        Point3D axisOfRotation =  normdir.normalize().crossProduct(yAxis);
+//        Point3D axisOfRotationPhi = diff.crossProduct(xAxis);
+        double angle = Math.acos(normdir.normalize().dotProduct(yAxis));
+
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), 0,0,0, axisOfRotation);
+
+        removeAllTransforms(edge);
+
+//      edge.setHeight(diff.magnitude());
+        edge.getTransforms().addAll(rotateAroundCenter,moveToMidpoint);
+
+        removeAllTransforms(edge.getStartPoint());
+        removeAllTransforms(edge.getEndPoint());
+
+        //This is tricky and should be done differently
+        edge.getStartPoint().setTranslateX(mid.getX()+r*normdir.getX());
+        edge.getStartPoint().setTranslateY(mid.getY()+r*normdir.getY());
+        edge.getStartPoint().setTranslateZ(mid.getZ()+r*normdir.getZ());
+
+        edge.getEndPoint().setTranslateX(mid.getX()-r*normdir.getX());
+        edge.getEndPoint().setTranslateY(mid.getY()-r*normdir.getY());
+        edge.getEndPoint().setTranslateZ(mid.getZ()-r*normdir.getZ());
+    }
+
     private void removeAllTransforms(Node node){
         while(node.getTransforms().size()>0){
             node.getTransforms().remove(0);
@@ -323,9 +363,9 @@ public class Graph {
         if(edges!=null && edges.size()>0){
             for(Edge ed: edges){
                 if(ed.getEndPoint().equals(vertex)){//Change end point
-                    transformEdge(ed,ed.getStartPoint().getPoint3D(),destination);
+                    translateEdge(ed,ed.getStartPoint().getPoint3D(),destination);
                 }else {//Change start point
-                    transformEdge(ed,destination,ed.getEndPoint().getPoint3D());
+                    translateEdge(ed,destination,ed.getEndPoint().getPoint3D());
                 }
             }
 
@@ -348,7 +388,8 @@ public class Graph {
 
             double r = Math.pow(n,1.4);
             for(int i=0;i<n;i++){
-                addVertex(new Vertex((rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,(rn.nextDouble()-0.5)*r,getVertexDefaultRadius(),getVertexDefaultMaterial()));
+                rn.nextGaussian();
+                addVertex(new Vertex(rn.nextGaussian()*r,rn.nextGaussian()*r,rn.nextGaussian()*r,getVertexDefaultRadius(),getVertexDefaultMaterial()));
             }
             for(Vertex vertex1 : getVertices()){
                 for(Vertex vertex2 : getVertices()){
