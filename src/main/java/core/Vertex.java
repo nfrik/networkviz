@@ -18,7 +18,7 @@ public class Vertex extends Sphere {
     }
 
     public Vertex(double x, double y, double z){
-        super(100);
+        super(10);
 
         super.setTranslateX(x);
         super.setTranslateY(y);

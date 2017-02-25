@@ -96,7 +96,7 @@ public class NetworkVis extends Application {
         Graph mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
         mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
-        mapGraph.setVertexDefaultRadius(50);
+        mapGraph.setVertexDefaultRadius(2);
 //
 //        Vertex v1=new Vertex(0,0,0);
 //        Vertex v2=new Vertex(100,100,50);
@@ -114,13 +114,13 @@ public class NetworkVis extends Application {
 
 //        mapGraph.generateRandomGraph(300,0.95,whiteMaterial);
 
-        Edge edge1 = mapGraph.createEdge(new Vertex(200,200,200),new Vertex(100,100,100));
+        Edge edge1 = mapGraph.createEdge(new Vertex(0,0,0),new Vertex(100,100,100));
         mapGraph.addEdge(edge1,whiteMaterial,new Object());
 //        Edge edge2 = mapGraph.createEdge(new Vertex(100,100,100),new Vertex(200,600,900));
 //        Edge edge3 = mapGraph.createEdge(new Vertex(200,600,900),new Vertex(700,900,1200));
 
         world.getChildren().addAll(edge1);
-//        world.getChildren().addAll(sphere);
+        world.getChildren().addAll(edge1.getStartPoint(),edge1.getEndPoint());
 
 //        world.getChildren().addAll(mapGraph.getEdges());
 //        world.getChildren().addAll(mapGraph.getVertices());
@@ -130,7 +130,7 @@ public class NetworkVis extends Application {
 
         Random rn = new Random();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             double betta = 0;
@@ -144,9 +144,9 @@ public class NetworkVis extends Application {
 //                v.setMaterial(pm);
 //                e.setMaterial(pm);
 
-                mapGraph.rotateEdgeAroundCenter(edge1,alpha,alpha);
-                alpha+=0.01;
-                betta+=0.01;
+                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
+                alpha+=0.1;
+                betta+=0.1;
 
 //                for(Vertex vertex: mapGraph.getVertices()){
 //                    mapGraph.transformVertexRandomDelta(vertex,1);

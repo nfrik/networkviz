@@ -318,23 +318,6 @@ public class Graph {
 
         Point3D mid = edge.getEndPoint().getPoint3D().midpoint(edge.getStartPoint().getPoint3D());
 
-        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
-
-        Point3D axisOfRotation =  normdir.normalize().crossProduct(yAxis);
-//        Point3D axisOfRotationPhi = diff.crossProduct(xAxis);
-        double angle = Math.acos(normdir.normalize().dotProduct(yAxis));
-
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), 0,0,0, axisOfRotation);
-
-        removeAllTransforms(edge);
-
-//      edge.setHeight(diff.magnitude());
-        edge.getTransforms().addAll(rotateAroundCenter,moveToMidpoint);
-
-        removeAllTransforms(edge.getStartPoint());
-        removeAllTransforms(edge.getEndPoint());
-
-        //This is tricky and should be done differently
         edge.getStartPoint().setTranslateX(mid.getX()+r*normdir.getX());
         edge.getStartPoint().setTranslateY(mid.getY()+r*normdir.getY());
         edge.getStartPoint().setTranslateZ(mid.getZ()+r*normdir.getZ());
@@ -342,9 +325,11 @@ public class Graph {
         edge.getEndPoint().setTranslateX(mid.getX()-r*normdir.getX());
         edge.getEndPoint().setTranslateY(mid.getY()-r*normdir.getY());
         edge.getEndPoint().setTranslateZ(mid.getZ()-r*normdir.getZ());
+
+        translateEdge(edge,edge.getStartPoint().getPoint3D(),edge.getEndPoint().getPoint3D());
     }
 
-    private void removeAllTransforms(Node node){
+    public void removeAllTransforms(Node node){
         while(node.getTransforms().size()>0){
             node.getTransforms().remove(0);
         }
