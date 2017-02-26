@@ -264,6 +264,38 @@ public class Graph {
         return inNbs;
     }
 
+    public double getAverageGeodesicDisntance(Map<Vertex,ArrayList<Edge>> graph){
+        //TODO implement
+        return 0;
+    }
+
+    public double getClusteringCoefficient(Map<Vertex,ArrayList<Edge>> graph){
+        //TODO implement
+        return 0;
+    }
+
+
+    /**
+     *
+     * @param n - The number of nodes
+     * @param k - Each node is connected to k nearest neighbors in ring topology
+     * @param p - The probability of rewiring each edge
+     * @param seed - Seed for random number generator (default=None)
+     * @return
+     */
+    public Map<Vertex,ArrayList<Edge>>  generateSmallWorldGraph(int n, int k, double p, int seed){
+        //TODO impllement
+
+        return null;
+    }
+
+
+    /**
+     *
+     * @param point1
+     * @param point2
+     * @return
+     */
     public Edge createEdge(Vertex point1, Vertex point2) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = point2.getPoint3D().subtract(point1.getPoint3D());// subtract(point1);

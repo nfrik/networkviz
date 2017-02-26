@@ -114,7 +114,7 @@ public class NetworkVis extends Application {
 
 //        mapGraph.generateRandomGraph(300,0.95,whiteMaterial);
 
-        Edge edge1 = mapGraph.createEdge(new Vertex(0,0,0),new Vertex(100,100,100));
+        Edge edge1 = mapGraph.createEdge(new Vertex(-100,-100,-100),new Vertex(100,100,100));
         mapGraph.addEdge(edge1,whiteMaterial,new Object());
 //        Edge edge2 = mapGraph.createEdge(new Vertex(100,100,100),new Vertex(200,600,900));
 //        Edge edge3 = mapGraph.createEdge(new Vertex(200,600,900),new Vertex(700,900,1200));
@@ -145,8 +145,8 @@ public class NetworkVis extends Application {
 //                e.setMaterial(pm);
 
                 mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
-                alpha+=0.1;
-                betta+=0.1;
+                alpha+=0.01;
+                betta+=0.01;
 
 //                for(Vertex vertex: mapGraph.getVertices()){
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
