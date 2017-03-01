@@ -112,19 +112,19 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-//        mapGraph.generateRandomGraph(30,0.92,whiteMaterial);
+        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
 
 
 
-        Vertex v1 = new Vertex(0,0,0);
-        Vertex v2 = new Vertex(0,100,0);
-        Vertex v3 = new Vertex(0,0,100);
-        Vertex v4 = new Vertex(0,200,90);
-
-        mapGraph.addEdge(v1,v2);
-        mapGraph.addEdge(v2,v3);
-        mapGraph.addEdge(v3,v1);
-        mapGraph.addEdge(v3,v4);
+//        Vertex v1 = new Vertex(0,0,0);
+//        Vertex v2 = new Vertex(0,100,0);
+//        Vertex v3 = new Vertex(0,0,100);
+//        Vertex v4 = new Vertex(0,200,90);
+//
+//        mapGraph.addEdge(v1,v2);
+//        mapGraph.addEdge(v2,v3);
+//        mapGraph.addEdge(v3,v1);
+//        mapGraph.addEdge(v3,v4);
 
 
 //        Edge edge1 = mapGraph.createEdge(new Vertex(-100,-100,-100),new Vertex(100,100,100));
@@ -144,7 +144,7 @@ public class NetworkVis extends Application {
         Random rn = new Random();
         Layout layout = new Layout();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             double betta = 0;
@@ -157,16 +157,15 @@ public class NetworkVis extends Application {
 //                pm.setDiffuseColor(new Color(rn.nextDouble(),rn.nextDouble(),rn.nextDouble(),1));
 //                v.setMaterial(pm);
 //                e.setMaterial(pm);
-
-//                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
-//                alpha+=0.01;
-//                betta+=0.01;
-
+//
+////                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
+////                alpha+=0.01;
+////                betta+=0.01;
+//
 //                for(Vertex vertex: mapGraph.getVertices()){
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
-//
-//
 //                }
+
                 layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
             }
         }));
