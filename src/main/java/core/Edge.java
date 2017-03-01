@@ -72,4 +72,14 @@ class Edge extends Box {
     public void setEndPoint(Vertex endPoint) {
         this.endPoint = endPoint;
     }
+
+    public double getRadius(){
+        return Math.sqrt(super.getWidth() * super.getWidth() + super.getDepth() * super.getDepth())/2;
+    }
+
+    public void setRadius(double radius){
+        double width = radius/Math.sqrt(2);
+        super.setWidth(width);
+        super.setDepth(width);
+    }
 }

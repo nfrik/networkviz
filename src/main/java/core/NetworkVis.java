@@ -96,7 +96,7 @@ public class NetworkVis extends Application {
         Graph mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
         mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
-        mapGraph.setVertexDefaultRadius(2);
+        mapGraph.setVertexDefaultRadius(20);
 //
 //        Vertex v1=new Vertex(0,0,0);
 //        Vertex v2=new Vertex(100,100,50);
@@ -112,25 +112,39 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-//        mapGraph.generateRandomGraph(300,0.95,whiteMaterial);
+//        mapGraph.generateRandomGraph(30,0.92,whiteMaterial);
 
-        Edge edge1 = mapGraph.createEdge(new Vertex(-100,-100,-100),new Vertex(100,100,100));
-        mapGraph.addEdge(edge1,whiteMaterial,new Object());
-//        Edge edge2 = mapGraph.createEdge(new Vertex(100,100,100),new Vertex(200,600,900));
-//        Edge edge3 = mapGraph.createEdge(new Vertex(200,600,900),new Vertex(700,900,1200));
 
-        world.getChildren().addAll(edge1);
-        world.getChildren().addAll(edge1.getStartPoint(),edge1.getEndPoint());
 
-//        world.getChildren().addAll(mapGraph.getEdges());
-//        world.getChildren().addAll(mapGraph.getVertices());
+        Vertex v1 = new Vertex(0,0,0);
+        Vertex v2 = new Vertex(0,100,0);
+        Vertex v3 = new Vertex(0,0,100);
+        Vertex v4 = new Vertex(0,200,90);
+
+        mapGraph.addEdge(v1,v2);
+        mapGraph.addEdge(v2,v3);
+        mapGraph.addEdge(v3,v1);
+        mapGraph.addEdge(v3,v4);
+
+
+//        Edge edge1 = mapGraph.createEdge(new Vertex(-100,-100,-100),new Vertex(100,100,100));
+////        mapGraph.addEdge(edge1,whiteMaterial,new Object());
+//        Edge edge2 = mapGraph.createEdge(edge1.getEndPoint(),new Vertex(200,600,900));
+//        Edge edge3 = mapGraph.createEdge(edge2.getEndPoint(),edge1.getStartPoint());
+
+//        world.getChildren().addAll(edge1);
+//        world.getChildren().addAll(edge1.getStartPoint(),edge1.getEndPoint());
+
+        world.getChildren().addAll(mapGraph.getEdges());
+        world.getChildren().addAll(mapGraph.getVertices());
 
         System.out.println("Total edges: "+mapGraph.getEdges().size());
         System.out.println("Total vertices: "+mapGraph.getVertices().size());
 
         Random rn = new Random();
+        Layout layout = new Layout();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(10), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             double betta = 0;
@@ -144,16 +158,16 @@ public class NetworkVis extends Application {
 //                v.setMaterial(pm);
 //                e.setMaterial(pm);
 
-                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
-                alpha+=0.01;
-                betta+=0.01;
+//                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
+//                alpha+=0.01;
+//                betta+=0.01;
 
 //                for(Vertex vertex: mapGraph.getVertices()){
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
 //
 //
 //                }
-
+                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
             }
         }));
 

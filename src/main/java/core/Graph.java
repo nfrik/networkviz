@@ -155,27 +155,30 @@ public class Graph {
 //            throw new IllegalArgumentException();
 //        }else{
 
-            if(!adjMapList.containsKey(from)){
-                addVertex(from);
-            }
+        if(!adjMapList.containsKey(from)){
+            addVertex(from);
+        }
 
-            if(!adjMapList.containsKey(to)){
-                addVertex(to);
-            }
+        if(!adjMapList.containsKey(to)){
+            addVertex(to);
+        }
 
-            ArrayList<Edge> tempList = adjMapList.get(from);
-            Edge se = createEdge(from,to);
+        ArrayList<Edge> tempList = adjMapList.get(from);
+        Edge se = createEdge(from,to);
 
-            //TODO find better way to assign material
-            se.setMaterial(material);
+        //TODO find better way to assign material
+        se.setMaterial(material);
 
-            se.setUniqueProperties(uniqueProperties);
+        se.setUniqueProperties(uniqueProperties);
 
-            tempList.add(se);
+        tempList.add(se);
 
-            adjMapList.put(from,tempList);
+        adjMapList.put(from,tempList);
 //        }
+    }
 
+    public void addEdge(Vertex from, Vertex to) throws IllegalArgumentException {
+        addEdge(from,to,edgeDefaultMaterial,null);
     }
 
     public void addEdge(Edge edge, PhongMaterial material, Object uniqueProperties) throws IllegalArgumentException {
@@ -200,6 +203,18 @@ public class Graph {
 
         adjMapList.put(edge.getStartPoint(),tempList);
 
+    }
+
+    public Edge getEdgeBetweenVertexes(Vertex v1, Vertex v2){
+        List<Edge> edges = outNeigborEdges(v1);
+        edges.addAll(inNeighborsEdges(v1));
+        for(Edge e : edges){
+            if(e.getStartPoint().equals(v2) || e.getEndPoint().equals(v2)){
+                return e;
+            }
+        }
+
+        return null;
     }
 
     public List<Vertex> outNeighbors(Vertex of){
@@ -288,7 +303,6 @@ public class Graph {
 
         return null;
     }
-
 
     /**
      *

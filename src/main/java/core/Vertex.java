@@ -2,6 +2,7 @@ package core;
 
 import javafx.beans.NamedArg;
 import javafx.geometry.Point3D;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
@@ -12,6 +13,7 @@ import javafx.scene.shape.Sphere;
  */
 public class Vertex extends Sphere {
 
+    private Point3D velocity = new Point3D(0,0,0);
 
     public Point3D getPoint3D(){
         return new Point3D(super.getTranslateX(),super.getTranslateY(),super.getTranslateZ());
@@ -61,6 +63,14 @@ public class Vertex extends Sphere {
         }
 
         return false;
+    }
+
+    public Point3D getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Point3D velocity) {
+        this.velocity = velocity;
     }
 
 //    @Override
