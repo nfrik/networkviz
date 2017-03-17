@@ -432,4 +432,38 @@ public class Graph {
         }
     }
 
+    public void generateSquareLattice2D(double dx, double dy, double spacing, String type, boolean periodic){
+
+        int lim=4;
+        int xmax=(int)Math.ceil(dx/spacing);
+        int ymax=(int)Math.ceil(dy/spacing);
+        Vertex vertex;
+
+        for(int i =0; i<xmax; i++ ){
+            for(int j=0; j<ymax; j++ ){
+                addVertex(new Vertex(i*spacing,j*spacing,0));
+            }
+        }
+
+
+
+        for(Vertex vertex1: getVertices()){
+            lim=0;
+            for(Vertex vertex2: getVertices()){
+                if((vertex1!=vertex2) && (vertex1.getPoint3D().distance(vertex2.getPoint3D())<=spacing)){
+                    addEdge(vertex1,vertex2,getVertexDefaultMaterial(),null);
+                    lim++;
+                }
+                if(lim==4){
+                    break;
+                }
+            }
+        }
+        System.out.println("Total vertexes: "+getNumVertices());
+    }
+
+    public void generateHoneycombLattice2D(double dx, double dy, double spacing, String type, boolean periodic){
+        
+    }
+
 }

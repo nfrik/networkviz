@@ -17,9 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Sphere;
-import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
@@ -112,7 +110,8 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
+//        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
+          mapGraph.generateSquareLattice2D(1000,1000,50,null,true);
 
 
 
@@ -166,7 +165,7 @@ public class NetworkVis extends Application {
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
 //                }
 
-                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
+//                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
             }
         }));
 
