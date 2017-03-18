@@ -111,7 +111,9 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
 //        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
-          mapGraph.generateSquareLattice2D(5000,5000,50,null,true);
+//          mapGraph.generateSquareLattice2D(500,400,50,null,true);
+
+          mapGraph.generateCubicLattice3D(150,150,150,50,50,50,null,true);
 
 
 
