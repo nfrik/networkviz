@@ -479,16 +479,17 @@ public class Graph {
             }
         }
 
-        for(int i = 0; i< ymax-1; i++) {
+
+        for(int i = 0; i< ymax; i++) {
             for (int j = 0; j < xmax-1; j++) {
                 addEdge(vx[i][j], vx[i][j+1]);
-                addEdge(vx[i][j], vx[i+1][j]);
             }
-            addEdge(vx[i][xmax-1], vx[i+1][xmax-1]);
         }
 
-        for(int j = 0; j < xmax-1; j++) {
-            addEdge(vx[ymax-1][j], vx[ymax-1][j+1]);
+        for(int j = 0; j < xmax; j++){
+            for(int i = 0; i < ymax-1; i++){
+                addEdge(vx[i][j], vx[i+1][j]);
+            }
         }
 
     }
@@ -545,28 +546,35 @@ public class Graph {
             }
         }
 
-        for (int k = 0; k < nz-1; k++) {
-            for (int i = 0; i < ny-1; i++) {
-                for (int j = 0; j < nx-1; j++) {
-                    addEdge(vx[i][j][k], vx[i][j+1][k]);
-                    addEdge(vx[i][j][k], vx[i+1][j][k]);
-                    addEdge(vx[i][j][k], vx[i][j][k+1]);
+
+
+
+        for(int k = 0; k < nz; k++) {
+            for (int i = 0; i < ny; i++) {
+                for (int j = 0; j < nx - 1; j++) {
+                    addEdge(vx[i][j][k], vx[i][j + 1][k]);
                 }
-                addEdge(vx[i][nx-1][k], vx[i+1][nx-1][k]);
             }
 
-            for (int j = 0; j < nx -1; j++){
-                addEdge(vx[ny-1][j][k], vx[ny-1][j+1][k]);
+            for (int j = 0; j < nx; j++) {
+                for (int i = 0; i < ny - 1; i++) {
+                    addEdge(vx[i][j][k], vx[i + 1][j][k]);
+                }
             }
         }
 
-        for(int k =0; k<nz-1; k++){
-
+        for(int k= 0; k<nz-1;k++){
+            for (int i = 0; i < ny; i++) {
+                for (int j = 0; j < nx ; j++) {
+                    addEdge(vx[i][j][k],vx[i][j][k+1]);
+                }
+            }
         }
+
 
     }
 
-    public void generateHoneycombLattice2DSlow(double dx, double dy, double spacing, String type, boolean periodic) {
+    public void generateHexagonalLattice2DSlow(double dx, double dy, double spacing, String type, boolean periodic) {
         int lim = 3;
         int xmax = (int) Math.ceil(dx / spacing);
         int ymax = (int) Math.ceil(dy / spacing);
@@ -607,11 +615,21 @@ public class Graph {
      */
     public void generateHexagonalLattice2D(double dx, double dy, double a, String type, boolean periodic) {
         int lim = 3;
-        double xunit = (2 + SIN30) * a;
-        double yunit = 2 * COS30 * a;
+        double xunit = 2 * a * COS30;
+        double yunit = a * (2 * SIN30 + 1);
 
         int numx = (int) Math.ceil(dx / xunit);
         int numy = (int) Math.ceil(dy / yunit);
+
+        Vertex[][] vx = new Vertex[numy][numx];
+
+        for(int i = 0; i< numy; i++) {
+            for (int j = 0; j < numx; j++) {
+//                vx[i][j] = new Vertex(i * (xunit + SIN30 * a), j * yunit, 0);
+                vx[i][j] = new Vertex( i * yunit + Math.pow(-1,i+j) * a * SIN30, j * a * COS30, 0);
+//                addVertex(vx[i][j]);
+            }
+        }
 
         for (int j = 0; j < numy; j++) {
             for (int i = 0; i < numx; i++) {
