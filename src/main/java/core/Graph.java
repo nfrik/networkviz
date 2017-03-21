@@ -615,45 +615,44 @@ public class Graph {
      */
     public void generateHexagonalLattice2D(double dx, double dy, double a, String type, boolean periodic) {
         int lim = 3;
-        double xunit = 2 * a * COS30;
-        double yunit = a * (2 * SIN30 + 1);
+        double xunit = a * COS30;
+        double yunit = a * (SIN30 + 1);
 
         int numx = (int) Math.ceil(dx / xunit);
         int numy = (int) Math.ceil(dy / yunit);
 
         Vertex[][] vx = new Vertex[numy][numx];
 
-        for(int i = 0; i< numy; i++) {
+//        grid[0][0] = new Hexagon(10,15,0,0);
+//
+        for (int i = 0; i < numy; i++){
             for (int j = 0; j < numx; j++) {
-//                vx[i][j] = new Vertex(i * (xunit + SIN30 * a), j * yunit, 0);
-                vx[i][j] = new Vertex( i * yunit + Math.pow(-1,i+j) * a * SIN30, j * a * COS30, 0);
-//                addVertex(vx[i][j]);
+                vx[i][j] = new Vertex(-1 * ((j + i) % 2) * a * SIN30 + yunit * i, j * a * COS30, 0);
+                addVertex(vx[i][j]);
             }
         }
 
-        for (int j = 0; j < numy; j++) {
-            for (int i = 0; i < numx; i++) {
-                addVertex(new Vertex(i * (xunit + SIN30 * a), j * yunit, 0));
-                addVertex(new Vertex(i * (xunit + SIN30 * a) + a, j * yunit, 0));
-                addVertex(new Vertex(i * (xunit + SIN30 * a) + (1 + SIN30) * a, j * yunit + COS30 * a, 0));
-                addVertex(new Vertex(i * (xunit + SIN30 * a) + (2 + SIN30) * a, j * yunit + COS30 * a, 0));
+        //Connect zigzag vertices
+        for(int i = 0; i< numy; i++) {
+            for (int j = 0; j < numx-1; j++) {
+                addEdge(vx[i][j], vx[i][j+1]);
             }
         }
 
-
-        for (Vertex vertex1 : getVertices()) {
-            lim = 0;
-            for (Vertex vertex2 : getVertices()) {
-                if ((vertex1 != vertex2) && (vertex1.getPoint3D().distance(vertex2.getPoint3D()) <= a + EPS)) {
-                    addEdge(vertex1, vertex2, getVertexDefaultMaterial(), null);
-                    lim++;
-                }
-                if (lim == 3) {
-                    break;
-                }
+        //Connect odd vertical vertices
+        for(int i=0; i< numy-1; i+=2){
+            for(int j=0; j<numx; j+=2){
+                addEdge(vx[i][j],vx[i+1][j]);
             }
         }
-        System.out.println("Total vertexes: " + getNumVertices());
+
+        //Connect even vertical vertices
+        for(int i=1; i< numy-1; i+=2){
+            for(int j=1; j<numx; j+=2){
+                addEdge(vx[i][j],vx[i+1][j]);
+            }
+        }
+
     }
 
     public void generateHexagonalLattice3D(double dx, double dy, double dz, double a, double c, String type, boolean periodic) {
