@@ -211,8 +211,8 @@ public class Graph {
     }
 
     public Edge getEdgeBetweenVertexes(Vertex v1, Vertex v2) {
-        List<Edge> edges = outNeigborEdges(v1);
-        edges.addAll(inNeighborsEdges(v1));
+        List<Edge> edges = getOutNeigborEdges(v1);
+        edges.addAll(getInNeighborsEdges(v1));
         for (Edge e : edges) {
             if (e.getStartPoint().equals(v2) || e.getEndPoint().equals(v2)) {
                 return e;
@@ -222,7 +222,7 @@ public class Graph {
         return null;
     }
 
-    public List<Vertex> outNeighbors(Vertex of) {
+    public List<Vertex> getOutNeighbors(Vertex of) {
         List<Vertex> outNbs = new ArrayList<Vertex>();
         if (!adjMapList.containsKey(of)) {
             return null;
@@ -234,19 +234,7 @@ public class Graph {
         return outNbs;
     }
 
-    public List<Edge> outNeigborEdges(Vertex of) {
-        List<Edge> outNbs = new ArrayList<Edge>();
-        if (!adjMapList.containsKey(of)) {
-            return null;
-        }
-
-        for (Edge se : adjMapList.get(of)) {
-            outNbs.add(se);
-        }
-        return outNbs;
-    }
-
-    public List<Vertex> inNeighbors(Vertex of) {
+    public List<Vertex> getInNeighbors(Vertex of) {
         List<Vertex> inNbs = new ArrayList<Vertex>();
 
         if (!adjMapList.containsKey(of)) {
@@ -264,7 +252,32 @@ public class Graph {
         return inNbs;
     }
 
-    public List<Edge> inNeighborsEdges(Vertex of) {
+
+    public List<Vertex> getAllNeighbors(Vertex of){
+        List<Vertex> inNbs = getInNeighbors(of);
+        List<Vertex> outNbs = getOutNeighbors(of);
+
+        if(outNbs!=null){
+            inNbs.addAll(outNbs);
+        }
+
+        return outNbs;
+    }
+
+    public List<Edge> getOutNeigborEdges(Vertex of) {
+        List<Edge> outNbs = new ArrayList<Edge>();
+        if (!adjMapList.containsKey(of)) {
+            return null;
+        }
+
+        for (Edge se : adjMapList.get(of)) {
+            outNbs.add(se);
+        }
+        return outNbs;
+    }
+
+
+    public List<Edge> getInNeighborsEdges(Vertex of) {
         List<Edge> inNbs = new ArrayList<Edge>();
 
         if (!adjMapList.containsKey(of)) {
@@ -283,6 +296,7 @@ public class Graph {
 
         return inNbs;
     }
+
 
     public double getAverageGeodesicDisntance(Map<Vertex, ArrayList<Edge>> graph) {
         //TODO implement
@@ -385,9 +399,9 @@ public class Graph {
     }
 
     public void transformVertex(Vertex vertex, Point3D destination) {
-        List<Edge> edges = outNeigborEdges(vertex);
+        List<Edge> edges = getOutNeigborEdges(vertex);
 
-        List<Edge> inEdges = inNeighborsEdges(vertex);
+        List<Edge> inEdges = getInNeighborsEdges(vertex);
 
         if (inEdges != null) {
             edges.addAll(inEdges);
@@ -405,6 +419,42 @@ public class Graph {
 
         }
 
+    }
+
+    public Vertex getCentralVertexWithinBoundary(double boundary){
+        Vertex centralVertex = null;
+
+        //Boundaries of the graph in 3D
+        double dx=0;
+        double dy=0;
+        double dz=0;
+
+        for(Vertex v : getVertices()){
+            if(v.getPoint3D().getX()>dx){
+                dx=v.getPoint3D().getX();
+            }
+            if(v.getPoint3D().getY()>dy){
+                dy=v.getPoint3D().getY();
+            }
+            if(v.getPoint3D().getZ()>dz){
+                dz=v.getPoint3D().getZ();
+            }
+        }
+
+        //Find approximate location of middle point
+        dx=dx/2;
+        dy=dy/2;
+        dz=dz/2;
+
+        Point3D mPoint = new Point3D(dx,dy,dz);
+
+        for(Vertex v : getVertices()){
+            if(mPoint.distance(v.getPoint3D()) <= boundary){
+                centralVertex = v;
+            }
+        }
+
+        return centralVertex;
     }
 
     public void transformVertexRandomDelta(Vertex vertex, double delta) {

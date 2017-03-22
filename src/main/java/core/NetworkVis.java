@@ -52,6 +52,8 @@ public class NetworkVis extends Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
+    Graph mapGraph = null;
+
     double mousePosX, mousePosY, mouseOldX, mouseOldY, mouseDeltaX, mouseDeltaY;
     double mouseFactorX, mouseFactorY;
     private Group axisGroup = new Group();
@@ -62,7 +64,7 @@ public class NetworkVis extends Application {
         root.setDepthTest(DepthTest.ENABLE);
         buildCamera();
         buildAxes();
-        buildBodySystem();
+//        buildBodySystem();
         Scene scene = new Scene(root, 800, 600, true);
         scene.setFill(Color.BLACK);
         handleMouse(scene);
@@ -85,67 +87,30 @@ public class NetworkVis extends Application {
         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
     }
 
-    private void buildBodySystem() {
-        PhongMaterial whiteMaterial = new PhongMaterial();
-        whiteMaterial.setDiffuseColor(Color.YELLOW);
-        whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
-        Box box = new Box(400, 200, 100);
-        box.setMaterial(whiteMaterial);
-        PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
-        Sphere sphere = new Sphere(5);
-        sphere.setMaterial(redMaterial);
-        sphere.setTranslateX(10.0);
-        sphere.setTranslateY(-100.0);
-        sphere.setTranslateZ(-50.0);
+    private void build2DHexBodySystem(double dx, double dy, double a) {
+//        PhongMaterial whiteMaterial = new PhongMaterial();
+//        whiteMaterial.setDiffuseColor(Color.YELLOW);
+//        whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
+//        Box box = new Box(400, 200, 100);
+//        box.setMaterial(whiteMaterial);
+//        PhongMaterial redMaterial = new PhongMaterial();
+//        redMaterial.setDiffuseColor(Color.DARKRED);
+//        redMaterial.setSpecularColor(Color.RED);
+//        Sphere sphere = new Sphere(5);
+//        sphere.setMaterial(redMaterial);
+//        sphere.setTranslateX(10.0);
+//        sphere.setTranslateY(-100.0);
+//        sphere.setTranslateZ(-50.0);
 //        world.getChildren().addAll(box);
 
-
-        Graph mapGraph = new Graph();
+        mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
-        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
+        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.TURQUOISE);
         mapGraph.setVertexDefaultRadius(20);
-//
-//        Vertex v1=new Vertex(0,0,0);
-//        Vertex v2=new Vertex(100,100,50);
-//        Vertex v3=new Vertex(70,700,100);
-//        Vertex v4=new Vertex(-80,100,-50);
-//        Vertex v5=new Vertex(0,0,500);
-//
-//
-//        mapGraph.addEdge(v1,v2, whiteMaterial,new Object());
-//        mapGraph.addEdge(v1,v3,whiteMaterial,new Object());
-//        mapGraph.addEdge(v1,v4,whiteMaterial,new Object());
-//        mapGraph.addEdge(v2,v5,whiteMaterial,new Object());
-//        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
-//        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-//        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
-//          mapGraph.generateSquareLattice2D(500,400,50,null,true);
-
-//          mapGraph.generateCubicLattice3D(150,150,150,50,50,50,null,true);
-        mapGraph.generateHexagonalLattice2D(780, 880, 53, null, true);
+        mapGraph.generateHexagonalLattice2D(dx, dy, a, null, true);
 
 
-//        Vertex v1 = new Vertex(0,0,0);
-//        Vertex v2 = new Vertex(0,100,0);
-//        Vertex v3 = new Vertex(0,0,100);
-//        Vertex v4 = new Vertex(0,200,90);
-//
-//        mapGraph.addEdge(v1,v2);
-//        mapGraph.addEdge(v2,v3);
-//        mapGraph.addEdge(v3,v1);
-//        mapGraph.addEdge(v3,v4);
-
-
-//        Edge edge1 = mapGraph.createEdge(new Vertex(-100,-100,-100),new Vertex(100,100,100));
-////        mapGraph.addEdge(edge1,whiteMaterial,new Object());
-//        Edge edge2 = mapGraph.createEdge(edge1.getEndPoint(),new Vertex(200,600,900));
-//        Edge edge3 = mapGraph.createEdge(edge2.getEndPoint(),edge1.getStartPoint());
-
-//        world.getChildren().addAll(edge1);
-//        world.getChildren().addAll(edge1.getStartPoint(),edge1.getEndPoint());
 
         world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
@@ -153,16 +118,57 @@ public class NetworkVis extends Application {
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
+        setAndUpdatePositionsLoop2D(500);
+
+    }
+
+    private void setAndUpdatePositionsLoop2D(long millis){
+
+        PhongMaterial redMaterial = new PhongMaterial();
+        redMaterial.setDiffuseColor(Color.DARKRED);
+        redMaterial.setSpecularColor(Color.RED);
+        Sphere sphere = new Sphere(20);
+        sphere.setMaterial(redMaterial);
+        sphere.setTranslateX(10.0);
+        sphere.setTranslateY(-100.0);
+        sphere.setTranslateZ(-50.0);
+
+        final Point3D vacancy = new Point3D(0, 0, 0);
+
+        world.getChildren().addAll(sphere);
+
+        final Vertex[] initVacancyPos = {mapGraph.getCentralVertexWithinBoundary(70)};//TODO replace with actual side length a
+        if(initVacancyPos[0] !=null){
+            sphere.setTranslateX(initVacancyPos[0].getPoint3D().getX());
+            sphere.setTranslateY(initVacancyPos[0].getPoint3D().getY());
+            sphere.setTranslateZ(initVacancyPos[0].getPoint3D().getZ());
+        }
+
+
         Random rn = new Random();
         Layout layout = new Layout();
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(millis), new EventHandler<ActionEvent>() {
+//            Point3D startP = new Point3D(0, 0, 0);
+//            double alpha = 0;
+//            double betta = 0;
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
-            Point3D startP = new Point3D(0, 0, 0);
-            double alpha = 0;
-            double betta = 0;
 
             @Override
             public void handle(ActionEvent event) {
+                //Here we simply update position by searching neighbors of given vertex
+
+                List<Vertex> nbs = mapGraph.getAllNeighbors(initVacancyPos[0]);
+
+                //If there are neighbors choose random element and assign new position
+                if(nbs!=null){
+                    initVacancyPos[0] = nbs.get(rn.nextInt(nbs.size()));
+                }
+
+                if(initVacancyPos[0] !=null){
+                    sphere.setTranslateX(initVacancyPos[0].getPoint3D().getX());
+                    sphere.setTranslateY(initVacancyPos[0].getPoint3D().getY());
+                    sphere.setTranslateZ(initVacancyPos[0].getPoint3D().getZ());
+                }
 
 //                Vertex v = (Vertex) mapGraph.getVertices().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
 //                Edge e = (Edge) mapGraph.getEdges().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
@@ -282,9 +288,48 @@ public class NetworkVis extends Application {
         grid.getChildren().add(deltaz);
 
 
+        final TextField sideLength = new TextField();
+        sideLength.setPromptText("Enter side length a");
+        sideLength.setPrefColumnCount(10);
+        sideLength.getText();
+        sideLength.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    sideLength.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        GridPane.setConstraints(sideLength, 1, 0);
+        grid.getChildren().add(sideLength);
+
+        final TextField verticalLength = new TextField();
+        verticalLength.setPromptText("Enter vertical length c");
+        verticalLength.setPrefColumnCount(10);
+        verticalLength.getText();
+        verticalLength.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    verticalLength.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        GridPane.setConstraints(verticalLength, 1, 1);
+        grid.getChildren().add(verticalLength);
+
+
         //Defining generate Hex2D Vacancy grid button
         Button hex2dVac = new Button("Generate Hex2D Vac");
         GridPane.setConstraints(hex2dVac, 0, 3);
+        hex2dVac.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                world.getChildren().clear();
+                buildAxes();
+                build2DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),50);
+            }
+        });
         grid.getChildren().add(hex2dVac);
 
         //Defining generate Hex3D Vacancy grid button
