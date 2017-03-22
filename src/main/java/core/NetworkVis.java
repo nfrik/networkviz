@@ -24,7 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Shape;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
@@ -118,11 +117,30 @@ public class NetworkVis extends Application {
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
-        setAndUpdatePositionsLoop2D(500);
+        setAndUpdatePositionsLoop(500,a);
 
     }
 
-    private void setAndUpdatePositionsLoop2D(long millis){
+    private void build3DHexBodySystem(double dx, double dy, double dz, double a, double c) {
+
+        mapGraph = new Graph();
+        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
+        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.YELLOW);
+        mapGraph.setVertexDefaultRadius(20);
+
+        mapGraph.generateHexagonalLattice3D(dx, dy, dz, a, c, null, true);
+
+        world.getChildren().addAll(mapGraph.getEdges());
+        world.getChildren().addAll(mapGraph.getVertices());
+
+        System.out.println("Total edges: " + mapGraph.getEdges().size());
+        System.out.println("Total vertices: " + mapGraph.getVertices().size());
+
+        setAndUpdatePositionsLoop(50,a);
+
+    }
+
+    private void setAndUpdatePositionsLoop(long millis, double bound){
 
         PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
@@ -137,11 +155,11 @@ public class NetworkVis extends Application {
 
         world.getChildren().addAll(sphere);
 
-        final Vertex[] initVacancyPos = {mapGraph.getCentralVertexWithinBoundary(70)};//TODO replace with actual side length a
-        if(initVacancyPos[0] !=null){
-            sphere.setTranslateX(initVacancyPos[0].getPoint3D().getX());
-            sphere.setTranslateY(initVacancyPos[0].getPoint3D().getY());
-            sphere.setTranslateZ(initVacancyPos[0].getPoint3D().getZ());
+        final Vertex[] nextVacancyPos = {mapGraph.getCentralVertexWithinBoundary(bound)};//TODO replace with actual side length a
+        if(nextVacancyPos[0] !=null){
+            sphere.setTranslateX(nextVacancyPos[0].getPoint3D().getX());
+            sphere.setTranslateY(nextVacancyPos[0].getPoint3D().getY());
+            sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
         }
 
 
@@ -157,17 +175,18 @@ public class NetworkVis extends Application {
             public void handle(ActionEvent event) {
                 //Here we simply update position by searching neighbors of given vertex
 
-                List<Vertex> nbs = mapGraph.getAllNeighbors(initVacancyPos[0]);
+                List<Vertex> nbs = mapGraph.getAllNeighbors(nextVacancyPos[0]);
+//                List<Vertex> nbs = mapGraph.getOutNeighbors(nextVacancyPos[0]);
 
                 //If there are neighbors choose random element and assign new position
                 if(nbs!=null){
-                    initVacancyPos[0] = nbs.get(rn.nextInt(nbs.size()));
+                    nextVacancyPos[0] = nbs.get(rn.nextInt(nbs.size()));
                 }
 
-                if(initVacancyPos[0] !=null){
-                    sphere.setTranslateX(initVacancyPos[0].getPoint3D().getX());
-                    sphere.setTranslateY(initVacancyPos[0].getPoint3D().getY());
-                    sphere.setTranslateZ(initVacancyPos[0].getPoint3D().getZ());
+                if(nextVacancyPos[0] !=null){
+                    sphere.setTranslateX(nextVacancyPos[0].getPoint3D().getX());
+                    sphere.setTranslateY(nextVacancyPos[0].getPoint3D().getY());
+                    sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
                 }
 
 //                Vertex v = (Vertex) mapGraph.getVertices().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
@@ -327,13 +346,21 @@ public class NetworkVis extends Application {
             public void handle(ActionEvent event) {
                 world.getChildren().clear();
                 buildAxes();
-                build2DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),50);
+                build2DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Double(sideLength.getText()));
             }
         });
         grid.getChildren().add(hex2dVac);
 
         //Defining generate Hex3D Vacancy grid button
         Button hex3dVac = new Button("Generate Hex3D Vac");
+        hex3dVac.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                world.getChildren().clear();
+                buildAxes();
+                build3DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()));
+            }
+        });
         GridPane.setConstraints(hex3dVac, 0, 4);
         grid.getChildren().add(hex3dVac);
 

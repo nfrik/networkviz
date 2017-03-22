@@ -244,7 +244,7 @@ public class Graph {
         for (Vertex start : adjMapList.keySet()) {
             for (Edge se : adjMapList.get(start)) {
                 if (se.getEndPoint().equals(of)) {
-                    inNbs.add(se.getEndPoint());
+                    inNbs.add(se.getStartPoint());
                 }
             }
         }
@@ -252,6 +252,23 @@ public class Graph {
         return inNbs;
     }
 
+    public List<Vertex> getAllNeighbors2(Vertex of){
+        List<Vertex> nbs = new ArrayList<Vertex>();
+
+        if(!adjMapList.containsKey(of)){
+            return null;
+        }
+
+        for(Vertex v : adjMapList.keySet()){
+            for(Edge se: adjMapList.get(v)){
+                if (se.getEndPoint().equals(of)) {
+                    nbs.add(se.getStartPoint());
+                }
+            }
+        }
+
+        return nbs;
+    }
 
     public List<Vertex> getAllNeighbors(Vertex of){
         List<Vertex> inNbs = getInNeighbors(of);
@@ -261,7 +278,7 @@ public class Graph {
             inNbs.addAll(outNbs);
         }
 
-        return outNbs;
+        return inNbs;
     }
 
     public List<Edge> getOutNeigborEdges(Vertex of) {
@@ -705,7 +722,70 @@ public class Graph {
 
     }
 
+
+    /**
+     * // build 2d lattice with _/- shape insertion in x direction and zigzag in y direction
+     *
+     * @param dx
+     * @param dy
+     * @param a
+     * @param type
+     * @param periodic
+     */
     public void generateHexagonalLattice3D(double dx, double dy, double dz, double a, double c, String type, boolean periodic) {
+        int lim = 3;
+        double xunit = a * COS30;
+        double yunit = a * (SIN30 + 1);
+
+        int numx = (int) Math.ceil(dx / xunit);
+        int numy = (int) Math.ceil(dy / yunit);
+        int numz = (int) Math.ceil(dz / c);
+
+        Vertex[][][] vx = new Vertex[numy][numx][numz];
+
+//        grid[0][0] = new Hexagon(10,15,0,0);
+//
+        for(int k = 0; k < numz ; k++) {
+            for (int i = 0; i < numy; i++) {
+                for (int j = 0; j < numx; j++) {
+                    vx[i][j][k] = new Vertex(-1 * ((j + i) % 2) * a * SIN30 + yunit * i, j * a * COS30, k*c);
+                    addVertex(vx[i][j][k]);
+                }
+            }
+
+            //Connect zigzag vertices
+            for (int i = 0; i < numy; i++) {
+                for (int j = 0; j < numx - 1; j++) {
+                    addEdge(vx[i][j][k], vx[i][j + 1][k]);
+                }
+            }
+
+            //Connect odd vertical vertices
+            for (int i = 0; i < numy - 1; i += 2) {
+                for (int j = 0; j < numx; j += 2) {
+                    addEdge(vx[i][j][k], vx[i + 1][j][k]);
+                }
+            }
+
+            //Connect even vertical vertices
+            for (int i = 1; i < numy - 1; i += 2) {
+                for (int j = 1; j < numx; j += 2) {
+                    addEdge(vx[i][j][k], vx[i + 1][j][k]);
+                }
+            }
+        }
+
+        for(int k = 0; k < numz-1; k++) {
+            for(int i=0; i < numy; i++){
+                for(int j=0; j < numx; j++){
+                    addEdge(vx[i][j][k], vx[i][j][k+1]);
+                }
+            }
+        }
+
+    }
+
+    public void generateHexagonalLattice3DSlow(double dx, double dy, double dz, double a, double c, String type, boolean periodic) {
 
         int limPlane;
         double xunit = (2 + SIN30) * a;
