@@ -8,19 +8,29 @@ package core;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
 import javafx.scene.*;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -64,6 +74,7 @@ public class NetworkVis extends Application {
         mouseFactorX = 180.0 / scene.getWidth();
         mouseFactorY = 180.0 / scene.getHeight();
 
+        createUtilityWindow(primaryStage);
     }
 
     private void buildCamera() {
@@ -114,8 +125,7 @@ public class NetworkVis extends Application {
 //          mapGraph.generateSquareLattice2D(500,400,50,null,true);
 
 //          mapGraph.generateCubicLattice3D(150,150,150,50,50,50,null,true);
-        mapGraph.generateHexagonalLattice2D(780,880,53,null,true);
-
+        mapGraph.generateHexagonalLattice2D(780, 880, 53, null, true);
 
 
 //        Vertex v1 = new Vertex(0,0,0);
@@ -140,16 +150,17 @@ public class NetworkVis extends Application {
         world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
 
-        System.out.println("Total edges: "+mapGraph.getEdges().size());
-        System.out.println("Total vertices: "+mapGraph.getVertices().size());
+        System.out.println("Total edges: " + mapGraph.getEdges().size());
+        System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
         Random rn = new Random();
         Layout layout = new Layout();
 
         final Timeline loop = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
-            Point3D startP = new Point3D(0,0,0);
+            Point3D startP = new Point3D(0, 0, 0);
             double alpha = 0;
             double betta = 0;
+
             @Override
             public void handle(ActionEvent event) {
 
@@ -176,6 +187,151 @@ public class NetworkVis extends Application {
         loop.play();
     }
 
+    private void createUtilityWindow(Stage stage) {
+        final Stage reportingStage = new Stage();
+        reportingStage.setTitle("Control Panel");
+        reportingStage.initStyle(StageStyle.UTILITY);
+        reportingStage.setX(stage.getX() + stage.getWidth());
+        reportingStage.setY(stage.getY());
+
+
+        //Setup the VBox Container and BorderPane
+        BorderPane root = new BorderPane();
+        VBox topContainer = new VBox();
+
+        //Setup the Main Menu bar and the ToolBar
+        MenuBar mainMenu = new MenuBar();
+        ToolBar toolBar = new ToolBar();
+        ToolBar toolBar2 = new ToolBar();
+        VBox utilityLayout = new VBox(10);
+        utilityLayout.setStyle("-fx-padding:10; -fx-background-color: linear-gradient(to bottom, lightblue, derive(lightblue, 20%));");
+
+        //Create SubMenu File.
+        Menu file = new Menu("File");
+        MenuItem openFile = new MenuItem("Open File");
+        MenuItem exitApp = new MenuItem("Exit");
+        file.getItems().addAll(openFile,exitApp);
+
+        //Create SubMenu Edit.
+        Menu edit = new Menu("Edit");
+        MenuItem properties = new MenuItem("Properties");
+        edit.getItems().add(properties);
+
+        //Create SubMenu Help.
+        Menu help = new Menu("Help");
+        MenuItem visitWebsite = new MenuItem("Visit Website");
+        help.getItems().add(visitWebsite);
+
+        mainMenu.getMenus().addAll(file, edit, help);
+
+        //Create some toolbar buttons
+        Button openFileBtn = new Button("Hellew");
+        Button openFileBtn2 = new Button("Hellew2");
+        Button printBtn = new Button();
+        Button snapshotBtn = new Button();
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(5);
+        grid.setHgap(5);
+
+        //Coordinates input
+        final TextField deltax = new TextField();
+        deltax.setPromptText("Enter dX");
+        deltax.setPrefColumnCount(10);
+        deltax.getText();
+        deltax.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    deltax.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        GridPane.setConstraints(deltax, 0, 0);
+        grid.getChildren().add(deltax);
+
+        final TextField deltay = new TextField();
+        deltay.setPromptText("Enter dY");
+        deltay.setPrefColumnCount(10);
+        deltay.getText();
+        deltay.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    deltay.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        GridPane.setConstraints(deltay, 0, 1);
+        grid.getChildren().add(deltay);
+
+        final TextField deltaz = new TextField();
+        deltaz.setPromptText("Enter dY");
+        deltaz.setPrefColumnCount(10);
+        deltaz.getText();
+        deltaz.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    deltaz.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        GridPane.setConstraints(deltaz, 0, 2);
+        grid.getChildren().add(deltaz);
+
+
+        //Defining generate Hex2D Vacancy grid button
+        Button hex2dVac = new Button("Generate Hex2D Vac");
+        GridPane.setConstraints(hex2dVac, 0, 3);
+        grid.getChildren().add(hex2dVac);
+
+        //Defining generate Hex3D Vacancy grid button
+        Button hex3dVac = new Button("Generate Hex3D Vac");
+        GridPane.setConstraints(hex3dVac, 0, 4);
+        grid.getChildren().add(hex3dVac);
+
+
+        //Defining generate HCP 3D direct exchange button
+        Button hcp3dExchange = new Button("Generate HCP Exchange");
+        GridPane.setConstraints(hcp3dExchange, 0, 5);
+        grid.getChildren().add(hcp3dExchange);
+
+        //Defining Start button
+        Button start = new Button("Start");
+        GridPane.setConstraints(start, 0, 7);
+        grid.getChildren().add(start);
+
+        //Defining Start button
+        Button stop = new Button("Stop");
+        GridPane.setConstraints(stop, 1, 7);
+        grid.getChildren().add(stop);
+
+        //Add the ToolBar and Main Meu to the VBox
+        topContainer.getChildren().add(mainMenu);
+        topContainer.getChildren().add(grid);
+        topContainer.getChildren().add(utilityLayout);
+
+        //Apply the VBox to the Top Border
+        root.setTop(topContainer);
+        Scene scene = new Scene(root, 300, 250);
+
+        // layout the utility pane.
+        utilityLayout.setStyle("-fx-padding:10; -fx-background-color: linear-gradient(to bottom, lightblue, derive(lightblue, 20%));");
+        utilityLayout.setPrefHeight(530);
+        reportingStage.setScene(scene);
+        reportingStage.show();
+//
+        // ensure the utility window closes when the main app window closes.
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                reportingStage.close();
+            }
+        });
+
+    }
 
     private void buildAxes() {
         System.out.println("buildAxes()");
