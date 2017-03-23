@@ -33,6 +33,8 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class NetworkVis extends Application {
     final Group root = new Group();
@@ -50,6 +52,8 @@ public class NetworkVis extends Application {
     private static final double MOUSE_SPEED = 1;
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
+
+    private Timeline loop = null;
 
     Graph mapGraph = null;
 
@@ -75,7 +79,7 @@ public class NetworkVis extends Application {
         mouseFactorX = 180.0 / scene.getWidth();
         mouseFactorY = 180.0 / scene.getHeight();
 
-        createUtilityWindow(primaryStage);
+        UtilityMenu.getInstance().createUtilityWindow(primaryStage,this);
     }
 
     private void buildCamera() {
@@ -86,7 +90,7 @@ public class NetworkVis extends Application {
         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
     }
 
-    private void build2DHexBodySystem(double dx, double dy, double a) {
+    protected void build2DHexBodySystem(double dx, double dy, double a, int copies) {
 //        PhongMaterial whiteMaterial = new PhongMaterial();
 //        whiteMaterial.setDiffuseColor(Color.YELLOW);
 //        whiteMaterial.setSpecularColor(Color.LIGHTBLUE);
@@ -117,11 +121,11 @@ public class NetworkVis extends Application {
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
-        setAndUpdatePositionsLoop(500,a);
+        setAndUpdatePositionsLoop(250,a, copies);
 
     }
 
-    private void build3DHexBodySystem(double dx, double dy, double dz, double a, double c) {
+    protected void build3DHexBodySystem(double dx, double dy, double dz, double a, double c, int copies) {
 
         mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
@@ -136,44 +140,69 @@ public class NetworkVis extends Application {
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
-        setAndUpdatePositionsLoop(50,a);
+        setAndUpdatePositionsLoop(250,a, copies);
 
     }
 
-    private void setAndUpdatePositionsLoop(long millis, double bound){
+    private void setAndUpdatePositionsLoop(long millis, double bound, int copies){
 
+        if(getLoop()!=null){
+            getLoop().stop();
+        }
+
+        Random rn = new Random();
         PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
         redMaterial.setSpecularColor(Color.RED);
-        Sphere sphere = new Sphere(20);
-        sphere.setMaterial(redMaterial);
-        sphere.setTranslateX(10.0);
-        sphere.setTranslateY(-100.0);
-        sphere.setTranslateZ(-50.0);
+
+//        Sphere sphere = new Sphere(20);
+//        sphere.setMaterial(redMaterial);
+
+        List<Sphere> spheres = new ArrayList<>();
+
+        for(int i=0;i<copies;i++){
+            spheres.add(new Sphere(20));
+            spheres.get(i).setMaterial(redMaterial);
+        }
 
         final Point3D vacancy = new Point3D(0, 0, 0);
 
-        world.getChildren().addAll(sphere);
+        world.getChildren().addAll(spheres);
 
-        final Vertex[] nextVacancyPos = {mapGraph.getCentralVertexWithinBoundary(bound)};//TODO replace with actual side length a
-        if(nextVacancyPos[0] !=null){
-            sphere.setTranslateX(nextVacancyPos[0].getPoint3D().getX());
-            sphere.setTranslateY(nextVacancyPos[0].getPoint3D().getY());
-            sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
+
+        final Vertex nextVacancyPos = mapGraph.getCentralVertexWithinBoundary(bound);//TODO replace with actual side length a
+
+        final List<Vertex> vertices = new ArrayList<Vertex>();
+
+
+        for(Sphere sphere : spheres) {
+            vertices.add(nextVacancyPos);
+            if (nextVacancyPos != null) {
+                sphere.setTranslateX(nextVacancyPos.getPoint3D().getX());
+                sphere.setTranslateY(nextVacancyPos.getPoint3D().getY());
+                sphere.setTranslateZ(nextVacancyPos.getPoint3D().getZ());
+            }
         }
 
 
-        Random rn = new Random();
-        Layout layout = new Layout();
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(millis), new EventHandler<ActionEvent>() {
-//            Point3D startP = new Point3D(0, 0, 0);
-//            double alpha = 0;
-//            double betta = 0;
 
+        Point3D startPoint = nextVacancyPos.getPoint3D();
+
+
+
+        setLoop(new Timeline(new KeyFrame(Duration.millis(millis), new EventHandler<ActionEvent>() {
+
+            int steps = 1;
 
             @Override
             public void handle(ActionEvent event) {
                 //Here we simply update position by searching neighbors of given vertex
+
+                //Get new positions
+                for(Vertex v : vertices){
+                    List<Vertex> nbs = mapGraph.getAllNeighbors(v);
+                    
+                }
 
                 List<Vertex> nbs = mapGraph.getAllNeighbors(nextVacancyPos[0]);
 //                List<Vertex> nbs = mapGraph.getOutNeighbors(nextVacancyPos[0]);
@@ -189,223 +218,31 @@ public class NetworkVis extends Application {
                     sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
                 }
 
-//                Vertex v = (Vertex) mapGraph.getVertices().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
-//                Edge e = (Edge) mapGraph.getEdges().toArray()[rn.nextInt(mapGraph.getNumVertices()-1)];
-//                PhongMaterial pm = new PhongMaterial();
-//                pm.setDiffuseColor(new Color(rn.nextDouble(),rn.nextDouble(),rn.nextDouble(),1));
-//                v.setMaterial(pm);
-//                e.setMaterial(pm);
-//
-////                mapGraph.rotateEdgeAroundCenter(edge1,.4,betta);
-////                alpha+=0.01;
-////                betta+=0.01;
-//
-//                for(Vertex vertex: mapGraph.getVertices()){
-//                    mapGraph.transformVertexRandomDelta(vertex,1);
-//                }
 
-//                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
+//                R.add(startPoint.distance(nextVacancyPos[0].getPoint3D()));
+
+                double Rn = startPoint.distance(nextVacancyPos[0].getPoint3D());
+
+                UtilityMenu.getInstance().getRmsdLabel().setText(String.format("Rmsd: %2.2f Steps: %d", Math.sqrt(Rn/steps),steps));
+
+                steps++;
+
             }
-        }));
+        })));
 
-        loop.setCycleCount(Timeline.INDEFINITE);
-        loop.play();
+        getLoop().setCycleCount(Timeline.INDEFINITE);
+        getLoop().play();
     }
 
-    private void createUtilityWindow(Stage stage) {
-        final Stage reportingStage = new Stage();
-        reportingStage.setTitle("Control Panel");
-        reportingStage.initStyle(StageStyle.UTILITY);
-        reportingStage.setX(stage.getX() + stage.getWidth());
-        reportingStage.setY(stage.getY());
-
-
-        //Setup the VBox Container and BorderPane
-        BorderPane root = new BorderPane();
-        VBox topContainer = new VBox();
-
-        //Setup the Main Menu bar and the ToolBar
-        MenuBar mainMenu = new MenuBar();
-        ToolBar toolBar = new ToolBar();
-        ToolBar toolBar2 = new ToolBar();
-        VBox utilityLayout = new VBox(10);
-        utilityLayout.setStyle("-fx-padding:10; -fx-background-color: linear-gradient(to bottom, lightblue, derive(lightblue, 20%));");
-
-        //Create SubMenu File.
-        Menu file = new Menu("File");
-        MenuItem openFile = new MenuItem("Open File");
-        MenuItem exitApp = new MenuItem("Exit");
-        file.getItems().addAll(openFile,exitApp);
-
-        //Create SubMenu Edit.
-        Menu edit = new Menu("Edit");
-        MenuItem properties = new MenuItem("Properties");
-        edit.getItems().add(properties);
-
-        //Create SubMenu Help.
-        Menu help = new Menu("Help");
-        MenuItem visitWebsite = new MenuItem("Visit Website");
-        help.getItems().add(visitWebsite);
-
-        mainMenu.getMenus().addAll(file, edit, help);
-
-        //Create some toolbar buttons
-        Button openFileBtn = new Button("Hellew");
-        Button openFileBtn2 = new Button("Hellew2");
-        Button printBtn = new Button();
-        Button snapshotBtn = new Button();
-
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10, 10, 10, 10));
-        grid.setVgap(5);
-        grid.setHgap(5);
-
-        //Coordinates input
-        final TextField deltax = new TextField();
-        deltax.setPromptText("Enter dX");
-        deltax.setPrefColumnCount(10);
-        deltax.getText();
-        deltax.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    deltax.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        GridPane.setConstraints(deltax, 0, 0);
-        grid.getChildren().add(deltax);
-
-        final TextField deltay = new TextField();
-        deltay.setPromptText("Enter dY");
-        deltay.setPrefColumnCount(10);
-        deltay.getText();
-        deltay.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    deltay.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        GridPane.setConstraints(deltay, 0, 1);
-        grid.getChildren().add(deltay);
-
-        final TextField deltaz = new TextField();
-        deltaz.setPromptText("Enter dY");
-        deltaz.setPrefColumnCount(10);
-        deltaz.getText();
-        deltaz.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    deltaz.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        GridPane.setConstraints(deltaz, 0, 2);
-        grid.getChildren().add(deltaz);
-
-
-        final TextField sideLength = new TextField();
-        sideLength.setPromptText("Enter side length a");
-        sideLength.setPrefColumnCount(10);
-        sideLength.getText();
-        sideLength.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    sideLength.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        GridPane.setConstraints(sideLength, 1, 0);
-        grid.getChildren().add(sideLength);
-
-        final TextField verticalLength = new TextField();
-        verticalLength.setPromptText("Enter vertical length c");
-        verticalLength.setPrefColumnCount(10);
-        verticalLength.getText();
-        verticalLength.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    verticalLength.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        GridPane.setConstraints(verticalLength, 1, 1);
-        grid.getChildren().add(verticalLength);
-
-
-        //Defining generate Hex2D Vacancy grid button
-        Button hex2dVac = new Button("Generate Hex2D Vac");
-        GridPane.setConstraints(hex2dVac, 0, 3);
-        hex2dVac.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                world.getChildren().clear();
-                buildAxes();
-                build2DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Double(sideLength.getText()));
-            }
-        });
-        grid.getChildren().add(hex2dVac);
-
-        //Defining generate Hex3D Vacancy grid button
-        Button hex3dVac = new Button("Generate Hex3D Vac");
-        hex3dVac.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                world.getChildren().clear();
-                buildAxes();
-                build3DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()));
-            }
-        });
-        GridPane.setConstraints(hex3dVac, 0, 4);
-        grid.getChildren().add(hex3dVac);
-
-
-        //Defining generate HCP 3D direct exchange button
-        Button hcp3dExchange = new Button("Generate HCP Exchange");
-        GridPane.setConstraints(hcp3dExchange, 0, 5);
-        grid.getChildren().add(hcp3dExchange);
-
-        //Defining Start button
-        Button start = new Button("Start");
-        GridPane.setConstraints(start, 0, 7);
-        grid.getChildren().add(start);
-
-        //Defining Start button
-        Button stop = new Button("Stop");
-        GridPane.setConstraints(stop, 1, 7);
-        grid.getChildren().add(stop);
-
-        //Add the ToolBar and Main Meu to the VBox
-        topContainer.getChildren().add(mainMenu);
-        topContainer.getChildren().add(grid);
-        topContainer.getChildren().add(utilityLayout);
-
-        //Apply the VBox to the Top Border
-        root.setTop(topContainer);
-        Scene scene = new Scene(root, 300, 250);
-
-        // layout the utility pane.
-        utilityLayout.setStyle("-fx-padding:10; -fx-background-color: linear-gradient(to bottom, lightblue, derive(lightblue, 20%));");
-        utilityLayout.setPrefHeight(530);
-        reportingStage.setScene(scene);
-        reportingStage.show();
-//
-        // ensure the utility window closes when the main app window closes.
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                reportingStage.close();
-            }
-        });
-
+    public Timeline getLoop() {
+        return loop;
     }
 
-    private void buildAxes() {
+    public void setLoop(Timeline loop) {
+        this.loop = loop;
+    }
+
+    protected void buildAxes() {
         System.out.println("buildAxes()");
         final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);

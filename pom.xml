@@ -63,6 +63,8 @@
             <version>0.7.2</version>
         </dependency>
 
+
+
         <!--<dependency>-->
             <!--<groupId>org.nd4j</groupId>-->
             <!--<artifactId>nd4j-jblas</artifactId>-->
