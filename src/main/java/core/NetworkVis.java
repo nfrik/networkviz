@@ -115,7 +115,7 @@ public class NetworkVis extends Application {
 
 
 
-        world.getChildren().addAll(mapGraph.getEdges());
+//        world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
 
         System.out.println("Total edges: " + mapGraph.getEdges().size());
@@ -134,7 +134,7 @@ public class NetworkVis extends Application {
 
         mapGraph.generateHexagonalLattice3D(dx, dy, dz, a, c, null, true);
 
-        world.getChildren().addAll(mapGraph.getEdges());
+//        world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
 
         System.out.println("Total edges: " + mapGraph.getEdges().size());
@@ -186,7 +186,7 @@ public class NetworkVis extends Application {
 
 
 
-        Point3D startPoint = nextVacancyPos.getPoint3D();
+        final Point3D startPoint = nextVacancyPos.getPoint3D();
 
 
 
@@ -194,36 +194,50 @@ public class NetworkVis extends Application {
 
             int steps = 1;
 
+
             @Override
             public void handle(ActionEvent event) {
                 //Here we simply update position by searching neighbors of given vertex
+                double rmsd = 0;
 
                 //Get new positions
                 for(Vertex v : vertices){
-                    List<Vertex> nbs = mapGraph.getAllNeighbors(v);
-                    
+
+
                 }
 
-                List<Vertex> nbs = mapGraph.getAllNeighbors(nextVacancyPos[0]);
+                for(int i=0;i<vertices.size();i++){
+                    List<Vertex> nbs = mapGraph.getAllNeighbors(vertices.get(i));
+                    if(nbs!=null){
+                        vertices.set(i,nbs.get(rn.nextInt(nbs.size())));
+                    }
+                    spheres.get(i).setTranslateX(vertices.get(i).getPoint3D().getX());
+                    spheres.get(i).setTranslateY(vertices.get(i).getPoint3D().getY());
+                    spheres.get(i).setTranslateZ(vertices.get(i).getPoint3D().getZ());
+                }
+
+                for(int i=0; i<vertices.size() ; i++){
+                    double r=vertices.get(i).getPoint3D().distance(startPoint);
+                    rmsd+=r*r/vertices.size();
+                }
+
 //                List<Vertex> nbs = mapGraph.getOutNeighbors(nextVacancyPos[0]);
 
                 //If there are neighbors choose random element and assign new position
-                if(nbs!=null){
-                    nextVacancyPos[0] = nbs.get(rn.nextInt(nbs.size()));
-                }
 
-                if(nextVacancyPos[0] !=null){
-                    sphere.setTranslateX(nextVacancyPos[0].getPoint3D().getX());
-                    sphere.setTranslateY(nextVacancyPos[0].getPoint3D().getY());
-                    sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
-                }
+
+//                if(nextVacancyPos[0] !=null){
+//                    sphere.setTranslateX(nextVacancyPos[0].getPoint3D().getX());
+//                    sphere.setTranslateY(nextVacancyPos[0].getPoint3D().getY());
+//                    sphere.setTranslateZ(nextVacancyPos[0].getPoint3D().getZ());
+//                }
 
 
 //                R.add(startPoint.distance(nextVacancyPos[0].getPoint3D()));
 
-                double Rn = startPoint.distance(nextVacancyPos[0].getPoint3D());
+//                double Rn = startPoint.distance(nextVacancyPos[0].getPoint3D());
 
-                UtilityMenu.getInstance().getRmsdLabel().setText(String.format("Rmsd: %2.2f Steps: %d", Math.sqrt(Rn/steps),steps));
+                UtilityMenu.getInstance().getRmsdLabel().setText(String.format("Rmsd: %2.2f Steps: %d", Math.sqrt(rmsd),steps));
 
                 steps++;
 

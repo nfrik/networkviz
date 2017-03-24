@@ -214,7 +214,7 @@ public class UtilityMenu {
         grid.getChildren().add(hex2dVac);
 
         setRmsdLabel(new Label());
-        GridPane.setConstraints(getRmsdLabel(),1,2);
+        GridPane.setConstraints(getRmsdLabel(),1,6);
         grid.getChildren().add(getRmsdLabel());
 
         //Defining generate Hex3D Vacancy grid button
