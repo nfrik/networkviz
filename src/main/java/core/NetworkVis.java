@@ -53,6 +53,9 @@ public class NetworkVis extends Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
+    PltXYSeries msdxy = new PltXYSeries("MSD planar");
+    PltXYSeries msdz = new PltXYSeries("MSD vertical");
+
     private Timeline loop = null;
 
     Graph mapGraph = null;
@@ -109,14 +112,14 @@ public class NetworkVis extends Application {
         mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
         mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.TURQUOISE);
-        mapGraph.setVertexDefaultRadius(20);
+        mapGraph.setVertexDefaultRadius(10);
 
         mapGraph.generateHexagonalLattice2D(dx, dy, a, null, true);
 
 
 
 //        world.getChildren().addAll(mapGraph.getEdges());
-        world.getChildren().addAll(mapGraph.getVertices());
+//        world.getChildren().addAll(mapGraph.getVertices());
 
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
@@ -130,12 +133,12 @@ public class NetworkVis extends Application {
         mapGraph = new Graph();
         mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
         mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.YELLOW);
-        mapGraph.setVertexDefaultRadius(20);
+        mapGraph.setVertexDefaultRadius(10);
 
         mapGraph.generateHexagonalLattice3D(dx, dy, dz, a, c, null, true);
 
 //        world.getChildren().addAll(mapGraph.getEdges());
-        world.getChildren().addAll(mapGraph.getVertices());
+//        world.getChildren().addAll(mapGraph.getVertices());
 
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
@@ -144,25 +147,46 @@ public class NetworkVis extends Application {
 
     }
 
+    protected void build3DRectBodySystem(double dx, double dy, double dz, double a, double c, int copies) {
+
+        mapGraph = new Graph();
+        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
+        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.YELLOW);
+        mapGraph.setVertexDefaultRadius(10);
+
+        mapGraph.generateCubicLattice3D(dx,dy,dz,a,a,c,null,true);
+
+//        world.getChildren().addAll(mapGraph.getEdges());
+//        world.getChildren().addAll(mapGraph.getVertices());
+
+        System.out.println("Total edges: " + mapGraph.getEdges().size());
+        System.out.println("Total vertices: " + mapGraph.getVertices().size());
+
+        setAndUpdatePositionsDirectExchangeLoop(250,a, copies);
+
+    }
+
     private void setAndUpdatePositionsLoop(long millis, double bound, int copies){
 
         if(getLoop()!=null){
             getLoop().stop();
+            msdxy.getSeries().clear();
+            msdz.getSeries().clear();
         }
 
         Random rn = new Random();
-        PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
+        PhongMaterial atomMaterial = new PhongMaterial();
+        atomMaterial.setDiffuseColor(Color.YELLOW);
+        atomMaterial.setSpecularColor(Color.YELLOW);
 
 //        Sphere sphere = new Sphere(20);
-//        sphere.setMaterial(redMaterial);
+//        sphere.setMaterial(atomMaterial);
 
         List<Sphere> spheres = new ArrayList<>();
 
         for(int i=0;i<copies;i++){
             spheres.add(new Sphere(20));
-            spheres.get(i).setMaterial(redMaterial);
+            spheres.get(i).setMaterial(atomMaterial);
         }
 
         final Point3D vacancy = new Point3D(0, 0, 0);
@@ -198,13 +222,10 @@ public class NetworkVis extends Application {
             @Override
             public void handle(ActionEvent event) {
                 //Here we simply update position by searching neighbors of given vertex
+                double rmsdxy = 0;
+                double rmsdz = 0;
                 double rmsd = 0;
 
-                //Get new positions
-                for(Vertex v : vertices){
-
-
-                }
 
                 for(int i=0;i<vertices.size();i++){
                     List<Vertex> nbs = mapGraph.getAllNeighbors(vertices.get(i));
@@ -217,9 +238,19 @@ public class NetworkVis extends Application {
                 }
 
                 for(int i=0; i<vertices.size() ; i++){
-                    double r=vertices.get(i).getPoint3D().distance(startPoint);
-                    rmsd+=r*r/vertices.size();
+                    double rr = vertices.get(i).getPoint3D().distance(startPoint);
+                    double rrz=vertices.get(i).getPoint3D().getZ()-startPoint.getZ();
+                    rr*=rr;
+                    rrz*=rrz;
+                    double rrxy=rr-rrz;
+
+                    rmsd+=rr/vertices.size();
+                    rmsdxy+=rrxy/vertices.size();
+                    rmsdz+=rrz/vertices.size();
                 }
+
+                msdxy.getSeries().add(steps,rmsdxy);
+                msdz.getSeries().add(steps,rmsdz);
 
 //                List<Vertex> nbs = mapGraph.getOutNeighbors(nextVacancyPos[0]);
 
@@ -237,7 +268,9 @@ public class NetworkVis extends Application {
 
 //                double Rn = startPoint.distance(nextVacancyPos[0].getPoint3D());
 
-                UtilityMenu.getInstance().getRmsdLabel().setText(String.format("Rmsd: %2.2f Steps: %d", Math.sqrt(rmsd),steps));
+
+
+//                UtilityMenu.getInstance().getRmsdLabel().setText(String.format("Rmsd: %2.2f Steps: %d", Math.sqrt(rmsd),steps));
 
                 steps++;
 
@@ -246,6 +279,103 @@ public class NetworkVis extends Application {
 
         getLoop().setCycleCount(Timeline.INDEFINITE);
         getLoop().play();
+    }
+
+
+    private void setAndUpdatePositionsDirectExchangeLoop(long millis, double bound, int copies){
+//        if(getLoop()!=null){
+//            getLoop().stop();
+//            msdxy.getSeries().clear();
+//            msdz.getSeries().clear();
+//        }
+//
+//        Random rn = new Random();
+//
+//        PhongMaterial atomAMaterial = new PhongMaterial();
+//        atomAMaterial.setDiffuseColor(Color.YELLOW);
+//
+//        PhongMaterial atomBMaterial = new PhongMaterial();
+//        atomBMaterial.setDiffuseColor(Color.BLUE);
+//
+//
+////        List<Sphere> spheres = new ArrayList<>();
+////
+////        for(int i=0;i<copies;i++){
+////            spheres.add(new Sphere(20));
+////            spheres.get(i).setMaterial(atomMaterial);
+////        }
+//
+//
+//
+//
+//        world.getChildren().addAll(spheres);
+//
+//
+//        final Vertex nextVacancyPos = mapGraph.getCentralVertexWithinBoundary(bound);//TODO replace with actual side length a
+//
+//        final List<Vertex> vertices = new ArrayList<Vertex>();
+//
+//
+//        for(Sphere sphere : spheres) {
+//            vertices.add(nextVacancyPos);
+//            if (nextVacancyPos != null) {
+//                sphere.setTranslateX(nextVacancyPos.getPoint3D().getX());
+//                sphere.setTranslateY(nextVacancyPos.getPoint3D().getY());
+//                sphere.setTranslateZ(nextVacancyPos.getPoint3D().getZ());
+//            }
+//        }
+//
+//
+//
+//        final Point3D startPoint = nextVacancyPos.getPoint3D();
+//
+//
+//
+//        setLoop(new Timeline(new KeyFrame(Duration.millis(millis), new EventHandler<ActionEvent>() {
+//
+//            int steps = 1;
+//
+//
+//            @Override
+//            public void handle(ActionEvent event) {
+//                //Here we simply update position by searching neighbors of given vertex
+//                double rmsdxy = 0;
+//                double rmsdz = 0;
+//                double rmsd = 0;
+//
+//
+//                for(int i=0;i<vertices.size();i++){
+//                    List<Vertex> nbs = mapGraph.getAllNeighbors(vertices.get(i));
+//                    if(nbs!=null){
+//                        vertices.set(i,nbs.get(rn.nextInt(nbs.size())));
+//                    }
+//                    spheres.get(i).setTranslateX(vertices.get(i).getPoint3D().getX());
+//                    spheres.get(i).setTranslateY(vertices.get(i).getPoint3D().getY());
+//                    spheres.get(i).setTranslateZ(vertices.get(i).getPoint3D().getZ());
+//                }
+//
+//                for(int i=0; i<vertices.size() ; i++){
+//                    double rr = vertices.get(i).getPoint3D().distance(startPoint);
+//                    double rrz=vertices.get(i).getPoint3D().getZ()-startPoint.getZ();
+//                    rr*=rr;
+//                    rrz*=rrz;
+//                    double rrxy=rr-rrz;
+//
+//                    rmsd+=rr/vertices.size();
+//                    rmsdxy+=rrxy/vertices.size();
+//                    rmsdz+=rrz/vertices.size();
+//                }
+//
+//                msdxy.getSeries().add(steps,rmsdxy);
+//                msdz.getSeries().add(steps,rmsdz);
+//
+//                steps++;
+//
+//            }
+//        })));
+//
+//        getLoop().setCycleCount(Timeline.INDEFINITE);
+//        getLoop().play();
     }
 
     public Timeline getLoop() {

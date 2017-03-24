@@ -222,7 +222,6 @@ public class UtilityMenu {
         hex3dVac.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                parent.getLoop().stop();
                 parent.world.getChildren().clear();
                 parent.buildAxes();
                 parent.build3DHexBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()),new Integer(nCopies.getText()));
@@ -237,14 +236,27 @@ public class UtilityMenu {
         GridPane.setConstraints(hcp3dExchange, 0, 7);
         grid.getChildren().add(hcp3dExchange);
 
+        //Defining generate Hex3D Vacancy grid button
+        Button rect3dVac = new Button("Rect3D Vac");
+        rect3dVac.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                parent.world.getChildren().clear();
+                parent.buildAxes();
+                parent.build3DRectBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()),new Integer(nCopies.getText()));
+            }
+        });
+        GridPane.setConstraints(rect3dVac, 0, 8);
+        grid.getChildren().add(rect3dVac);
+
         //Defining Start button
         Button start = new Button("Start");
-        GridPane.setConstraints(start, 0, 8);
+        GridPane.setConstraints(start, 0, 9);
         grid.getChildren().add(start);
 
         //Defining Start button
         Button stop = new Button("Stop");
-        GridPane.setConstraints(stop, 1, 8);
+        GridPane.setConstraints(stop, 1, 9);
         grid.getChildren().add(stop);
 
         //Add the ToolBar and Main Meu to the VBox
