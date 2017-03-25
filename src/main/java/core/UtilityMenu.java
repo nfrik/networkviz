@@ -98,6 +98,7 @@ public class UtilityMenu {
         deltax.setPromptText("Enter dX");
         deltax.setPrefColumnCount(10);
         deltax.getText();
+        deltax.setText("1000");
         deltax.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -112,6 +113,7 @@ public class UtilityMenu {
         final TextField deltay = new TextField();
         deltay.setPromptText("Enter dY");
         deltay.setPrefColumnCount(10);
+        deltay.setText("1000");
         deltay.getText();
         deltay.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -125,9 +127,10 @@ public class UtilityMenu {
         grid.getChildren().add(deltay);
 
         final TextField deltaz = new TextField();
-        deltaz.setPromptText("Enter dY");
+        deltaz.setPromptText("Enter dZ");
         deltaz.setPrefColumnCount(10);
         deltaz.getText();
+        deltaz.setText("500");
         deltaz.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -144,6 +147,7 @@ public class UtilityMenu {
         sideLength.setPromptText("Enter side length a");
         sideLength.setPrefColumnCount(10);
         sideLength.getText();
+        sideLength.setText("40");
         sideLength.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -159,6 +163,7 @@ public class UtilityMenu {
         verticalLength.setPromptText("Enter vertical length c");
         verticalLength.setPrefColumnCount(10);
         verticalLength.getText();
+        verticalLength.setText("65.32");
         verticalLength.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -231,33 +236,33 @@ public class UtilityMenu {
         grid.getChildren().add(hex3dVac);
 
 
-        //Defining generate HCP 3D direct exchange button
-        Button hcp3dExchange = new Button("Generate HCP Exchange");
-        GridPane.setConstraints(hcp3dExchange, 0, 7);
-        grid.getChildren().add(hcp3dExchange);
+//        //Defining generate HCP 3D direct exchange button
+//        Button hcp3dExchange = new Button("Generate HCP Exchange");
+//        GridPane.setConstraints(hcp3dExchange, 0, 7);
+//        grid.getChildren().add(hcp3dExchange);
+//
+//        //Defining generate Hex3D Vacancy grid button
+//        Button rect3dVac = new Button("Rect3D Vac");
+//        rect3dVac.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                parent.world.getChildren().clear();
+//                parent.buildAxes();
+//                parent.build3DRectBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()),new Integer(nCopies.getText()));
+//            }
+//        });
+//        GridPane.setConstraints(rect3dVac, 0, 8);
+//        grid.getChildren().add(rect3dVac);
 
-        //Defining generate Hex3D Vacancy grid button
-        Button rect3dVac = new Button("Rect3D Vac");
-        rect3dVac.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                parent.world.getChildren().clear();
-                parent.buildAxes();
-                parent.build3DRectBodySystem(new Integer(deltax.getText()),new Integer(deltay.getText()),new Integer(deltaz.getText()),new Double(sideLength.getText()),new Double(verticalLength.getText()),new Integer(nCopies.getText()));
-            }
-        });
-        GridPane.setConstraints(rect3dVac, 0, 8);
-        grid.getChildren().add(rect3dVac);
-
-        //Defining Start button
-        Button start = new Button("Start");
-        GridPane.setConstraints(start, 0, 9);
-        grid.getChildren().add(start);
-
-        //Defining Start button
-        Button stop = new Button("Stop");
-        GridPane.setConstraints(stop, 1, 9);
-        grid.getChildren().add(stop);
+//        //Defining Start button
+//        Button start = new Button("Start");
+//        GridPane.setConstraints(start, 0, 9);
+//        grid.getChildren().add(start);
+//
+//        //Defining Start button
+//        Button stop = new Button("Stop");
+//        GridPane.setConstraints(stop, 1, 9);
+//        grid.getChildren().add(stop);
 
         //Add the ToolBar and Main Meu to the VBox
         topContainer.getChildren().add(mainMenu);
