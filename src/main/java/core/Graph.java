@@ -474,6 +474,42 @@ public class Graph {
         return centralVertex;
     }
 
+    public Vertex getCentralVertexWithinBoundaryAndType(double boundary, int type){
+        Vertex centralVertex = null;
+
+        //Boundaries of the graph in 3D
+        double dx=0;
+        double dy=0;
+        double dz=0;
+
+        for(Vertex v : getVertices()){
+            if(v.getPoint3D().getX()>dx){
+                dx=v.getPoint3D().getX();
+            }
+            if(v.getPoint3D().getY()>dy){
+                dy=v.getPoint3D().getY();
+            }
+            if(v.getPoint3D().getZ()>dz){
+                dz=v.getPoint3D().getZ();
+            }
+        }
+
+        //Find approximate location of middle point
+        dx=dx/2;
+        dy=dy/2;
+        dz=dz/2;
+
+        Point3D mPoint = new Point3D(dx,dy,dz);
+
+        for(Vertex v : getVertices()){
+            if(mPoint.distance(v.getPoint3D()) <= boundary && v.getLuggage()==type){
+                centralVertex = v;
+            }
+        }
+
+        return centralVertex;
+    }
+
     public void transformVertexRandomDelta(Vertex vertex, double delta) {
         transformVertex(vertex, new Point3D(vertex.getPoint3D().getX() + (rn.nextDouble() - 0.5) * delta, vertex.getPoint3D().getY() + (rn.nextDouble() - 0.5) * delta, vertex.getPoint3D().getZ() + (rn.nextDouble() - 0.5) * delta));
     }

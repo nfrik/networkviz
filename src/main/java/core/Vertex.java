@@ -15,7 +15,7 @@ public class Vertex extends Sphere {
 
     private Point3D velocity = new Point3D(0,0,0);
 
-    private Object luggage;
+    private int luggage;
 
     public Point3D getPoint3D(){
         return new Point3D(super.getTranslateX(),super.getTranslateY(),super.getTranslateZ());
@@ -75,11 +75,11 @@ public class Vertex extends Sphere {
         this.velocity = velocity;
     }
 
-    public Object getLuggage() {
+    public int getLuggage() {
         return luggage;
     }
 
-    public void setLuggage(Object luggage) {
+    public void setLuggage(int luggage) {
         this.luggage = luggage;
     }
 

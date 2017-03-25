@@ -1,13 +1,16 @@
 package core;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by NF on 3/24/2017.
@@ -16,17 +19,30 @@ public class Problem4 {
 
     private Timeline loop = null;
 
-    PltXYSeries msdxy = new PltXYSeries("MSD planar");
-    PltXYSeries msdz = new PltXYSeries("MSD vertical");
+    PltXYSeries msdAplt = new PltXYSeries("MSD A");
+    PltXYSeries msdBplt = new PltXYSeries("MSD B");
 
     Graph mapGraph = null;
 
+    TreeMap<Double,Vertex> tm = new TreeMap<>();
+
+    Random rn = new Random();
+
     public static void main(String[] args){
+
         System.out.println("Test");
+
+        Problem4 pb4 = new Problem4();
+
+        int steps = 60;
+        int repetitions = 10;
+
+        pb4.build3DRectBodySystemAndRun(500,500,500,30,50,steps,repetitions);
+
     }
 
 
-    protected void build3DRectBodySystem(double dx, double dy, double dz, double a, double c, int copies) {
+    protected void build3DRectBodySystemAndRun(double dx, double dy, double dz, double a, double c, int steps, int repetitions) {
 
         mapGraph = new Graph();
         mapGraph.setVertexDefaultRadius(10);
@@ -41,20 +57,19 @@ public class Problem4 {
         System.out.println("Total edges: " + mapGraph.getEdges().size());
         System.out.println("Total vertices: " + mapGraph.getVertices().size());
 
-        setAndUpdatePositionsDirectExchangeLoop(250,a, copies);
+        setAndUpdatePositionsDirectExchangeLoop(250,a, steps,repetitions);
 
     }
 
 
-    private void setAndUpdatePositionsDirectExchangeLoop(long millis, double bound, int copies){
+    private void setAndUpdatePositionsDirectExchangeLoop(long millis, double bound, int steps, int rep){
 
         if(loop!=null){
             loop.stop();
-            msdxy.getSeries().clear();
-            msdz.getSeries().clear();
+            msdAplt.getSeries().clear();
+            msdBplt.getSeries().clear();
         }
 
-        Random rn = new Random();
 
         PhongMaterial atomAMaterial = new PhongMaterial();
         atomAMaterial.setDiffuseColor(Color.YELLOW);
@@ -63,84 +78,121 @@ public class Problem4 {
         atomBMaterial.setDiffuseColor(Color.BLUE);
 
 
-//        List<Sphere> spheres = new ArrayList<>();
-//
-//        for(int i=0;i<copies;i++){
-//            spheres.add(new Sphere(20));
-//            spheres.get(i).setMaterial(atomMaterial);
-//        }
+        Set<Vertex> vertices = mapGraph.getVertices();
 
-
-
-
-//        world.getChildren().addAll(spheres);
-
-
-        final Vertex nextVacancyPos = mapGraph.getCentralVertexWithinBoundary(bound);//TODO replace with actual side length a
-
-        final List<Vertex> vertices = new ArrayList<Vertex>();
-
-
-        for(Sphere sphere : spheres) {
-            vertices.add(nextVacancyPos);
-            if (nextVacancyPos != null) {
-                sphere.setTranslateX(nextVacancyPos.getPoint3D().getX());
-                sphere.setTranslateY(nextVacancyPos.getPoint3D().getY());
-                sphere.setTranslateZ(nextVacancyPos.getPoint3D().getZ());
-            }
+        //Populate supercell with A/B atoms randomly 50/50
+        for (Vertex v : mapGraph.getVertices()){
+            v.setLuggage((rn.nextBoolean()?1:2));
         }
 
+        Vertex initialA = null;
+        Vertex initialB = null;
 
+        initialA = mapGraph.getCentralVertexWithinBoundaryAndType(bound*2,1);
+        initialB = mapGraph.getCentralVertexWithinBoundaryAndType(bound*2,2);
 
-        final Point3D startPoint = nextVacancyPos.getPoint3D();
+        //The atoms we track have these labels
+        initialA.setLuggage(3);
+        initialB.setLuggage(4);
 
+        Vertex lastA = initialA;
+        Vertex lastB = initialB;
 
+        System.out.println(initialA+" "+initialB);
 
-        setLoop(new Timeline(new KeyFrame(Duration.millis(millis), new EventHandler<ActionEvent>() {
+        double[][] rAm = new double[rep][steps];
+        double[][] rBm = new double[rep][steps];
+//        Map<Integer, Map<Integer,Double>> rAm = new HashMap<>();
+//        Map<Integer, Map<Integer,Double>> rBm = new HashMap<>();
 
-            int steps = 1;
+        //Here we run direct exchange code
+        for(int i=0;i<rep;i++) {
+            for (int j = 0; j < steps; j++) {
+                for (Vertex v : vertices) {
+                    Vertex newPos = getWeightedRandomNeighborVertex(v);
 
-
-            @Override
-            public void handle(ActionEvent event) {
-                //Here we simply update position by searching neighbors of given vertex
-                double rmsdxy = 0;
-                double rmsdz = 0;
-                double rmsd = 0;
-
-
-                for(int i=0;i<vertices.size();i++){
-                    List<Vertex> nbs = mapGraph.getAllNeighbors(vertices.get(i));
-                    if(nbs!=null){
-                        vertices.set(i,nbs.get(rn.nextInt(nbs.size())));
+                    //Wee need to update lastA/B
+                    if (v.getLuggage() == 3) {
+                        lastA = newPos;
                     }
-                    spheres.get(i).setTranslateX(vertices.get(i).getPoint3D().getX());
-                    spheres.get(i).setTranslateY(vertices.get(i).getPoint3D().getY());
-                    spheres.get(i).setTranslateZ(vertices.get(i).getPoint3D().getZ());
+
+                    if (v.getLuggage() == 4) {
+                        lastB = newPos;
+                    }
+
+                    exchengeLuggage(v, newPos);
                 }
 
-                for(int i=0; i<vertices.size() ; i++){
-                    double rr = vertices.get(i).getPoint3D().distance(startPoint);
-                    double rrz=vertices.get(i).getPoint3D().getZ()-startPoint.getZ();
-                    rr*=rr;
-                    rrz*=rrz;
-                    double rrxy=rr-rrz;
-
-                    rmsd+=rr/vertices.size();
-                    rmsdxy+=rrxy/vertices.size();
-                    rmsdz+=rrz/vertices.size();
-                }
-
-                msdxy.getSeries().add(steps,rmsdxy);
-                msdz.getSeries().add(steps,rmsdz);
-
-                steps++;
+                //Save new positions
+                rAm[i][j]=lastA.getPoint3D().distance(initialA.getPoint3D());
+                rBm[i][j]=lastB.getPoint3D().distance(initialB.getPoint3D());
 
             }
-        })));
 
-        getLoop().setCycleCount(Timeline.INDEFINITE);
-        getLoop().play();
+            System.out.println("Rep: " + i + " A moved: "+rAm[i][steps-1]+ " B moved: "+rBm[i][steps-1]);
+        }
+
+        for(int j=0; j<steps; j++){
+
+            double rrA=0;
+            double rrB=0;
+
+            for(int i=0; i<rep; i++){
+                rrA+=rAm[i][j]*rAm[i][j]/rep;
+                rrB+=rBm[i][j]*rBm[i][j]/rep;
+            }
+
+
+            msdAplt.getSeries().add(j,rrA);
+            msdBplt.getSeries().add(j,rrB);
+
+        }
+
     }
+
+    private void exchengeLuggage(Vertex A, Vertex B){
+        int oldA = A.getLuggage();
+        A.setLuggage(B.getLuggage());
+        B.setLuggage(oldA);
+    }
+
+    private Vertex getWeightedRandomNeighborVertex(Vertex of){
+
+            Vertex out = null;
+            tm.clear();
+            double count=0;
+            double norm=0;
+            List<Vertex> nbs = mapGraph.getAllNeighbors(of);
+
+            for(Vertex n: nbs){
+
+                if(of.getLuggage()==1) {
+                    if(n.getLuggage()==1) {
+                        count+=0.2;
+                    }else if(n.getLuggage()==2) {
+                        count+=0.3;
+                    }
+                }else {
+                    if(n.getLuggage()==1) {
+                        count+=0.3;
+                    }else if(n.getLuggage()==2) {
+                        count+=0.5;
+                    }
+                }
+                tm.put(count,n);
+            }
+
+        double rand = tm.higherKey(rn.nextDouble() * count);
+        try {
+
+            out = tm.get(rand);
+        }catch(Exception e){
+            System.out.println("Oops");
+        }
+
+        return out;
+
+    }
+
 
 }

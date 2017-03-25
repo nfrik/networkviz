@@ -53,8 +53,8 @@ public class NetworkVis extends Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
-    PltXYSeries msdxy = new PltXYSeries("MSD planar");
-    PltXYSeries msdz = new PltXYSeries("MSD vertical");
+    private PltXYSeries msdxy = new PltXYSeries("MSD planar");
+    private PltXYSeries msdz = new PltXYSeries("MSD vertical");
 
     private Timeline loop = null;
 
