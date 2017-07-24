@@ -63,8 +63,8 @@ public class Layout {
         for(Vertex vi : graph.getVertices()){
 
             F = new Point3D(0,0,0);
-            viNeighbors = graph.inNeighbors(vi);
-            viNeighbors.addAll(graph.outNeighbors(vi));
+            viNeighbors = graph.getInNeighbors(vi);
+            viNeighbors.addAll(graph.getOutNeighbors(vi));
 
             for(Vertex vj : graph.getVertices()){
                 if(vj!=stat && vi!=vj) {

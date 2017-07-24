@@ -112,7 +112,9 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
+//        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
+//        mapGraph.generateCubicLattice3D(1000, 1000,1000,50,50,50,null,true);
+        mapGraph.generateSquareLattice2D(500,500,50,null,true);
 
 
 
@@ -135,6 +137,8 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(edge1);
 //        world.getChildren().addAll(edge1.getStartPoint(),edge1.getEndPoint());
 
+
+
         world.getChildren().addAll(mapGraph.getEdges());
         world.getChildren().addAll(mapGraph.getVertices());
 
@@ -144,7 +148,7 @@ public class NetworkVis extends Application {
         Random rn = new Random();
         Layout layout = new Layout();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(50), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(500), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             double betta = 0;
@@ -166,7 +170,13 @@ public class NetworkVis extends Application {
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
 //                }
 
-                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
+//                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
+//                mapGraph.removeVertex(mapGraph.getRandomVertex(),world);
+                mapGraph.removeEdge(mapGraph.getRandomEdge(),world);
+
+//                world.getChildren().clear();
+//                world.getChildren().addAll(mapGraph.getEdges());
+//                world.getChildren().addAll(mapGraph.getVertices());
             }
         }));
 
