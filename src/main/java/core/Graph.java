@@ -173,7 +173,9 @@ public class Graph {
             if(!toRemove.isEmpty()) {
                 for (Vertex vr : toRemove.keySet()){
                     adjMapList.get(vr).remove(toRemove.get(vr));
-                    removeNode(g, toRemove, vr);
+                    if(g != null) {
+                        removeNode(g, toRemove, vr);
+                    }
                 }
             }
             adjMapList.remove(v);//remove vertex and edges pointing away from it
@@ -214,7 +216,9 @@ public class Graph {
             for(Vertex v: toRemove.keySet()){
                 adjMapList.get(v).remove(toRemove.get(v));
 
-                removeNode(g, toRemove, v);
+                if(g != null) {
+                    removeNode(g, toRemove, v);
+                }
             }
         }
 

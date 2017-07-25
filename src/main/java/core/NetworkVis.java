@@ -93,10 +93,11 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        Graph mapGraph = new Graph();
-        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
-        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
-        mapGraph.setVertexDefaultRadius(20);
+        Graph mapGraph = CircuitUtil.generateRandomCircuit(100,2,0.1);
+//        Graph mapGraph = new Graph();
+//        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
+//        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
+//        mapGraph.setVertexDefaultRadius(20);
 //
 //        Vertex v1=new Vertex(0,0,0);
 //        Vertex v2=new Vertex(100,100,50);
@@ -114,7 +115,8 @@ public class NetworkVis extends Application {
 
 //        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
 //        mapGraph.generateCubicLattice3D(1000, 1000,1000,50,50,50,null,true);
-        mapGraph.generateSquareLattice2D(500,500,50,null,true);
+
+//        mapGraph.generateSquareLattice2D(500,500,50,null,true);
 
 
 
@@ -174,6 +176,7 @@ public class NetworkVis extends Application {
 //                mapGraph.removeVertex(mapGraph.getRandomVertex(),world);
                 mapGraph.removeEdge(mapGraph.getRandomEdge(),world);
 
+
 //                world.getChildren().clear();
 //                world.getChildren().addAll(mapGraph.getEdges());
 //                world.getChildren().addAll(mapGraph.getVertices());
@@ -181,7 +184,7 @@ public class NetworkVis extends Application {
         }));
 
         loop.setCycleCount(Timeline.INDEFINITE);
-        loop.play();
+//        loop.play();
     }
 
 

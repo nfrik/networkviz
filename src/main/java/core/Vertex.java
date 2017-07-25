@@ -22,7 +22,7 @@ public class Vertex extends Sphere {
     }
 
     public Vertex(double x, double y, double z){
-        super(10);
+        super(5);
 
         super.setTranslateX(x);
         super.setTranslateY(y);
