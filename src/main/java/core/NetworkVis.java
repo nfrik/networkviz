@@ -93,7 +93,9 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        Graph mapGraph = CircuitUtil.generateRandomCircuit(100,2,0.1);
+        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,3,0.5);
+
+
 //        Graph mapGraph = new Graph();
 //        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
 //        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
