@@ -2,9 +2,7 @@ package core;
 
 import javafx.geometry.Point3D;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by friknik on 2/28/2017.
@@ -63,8 +61,8 @@ public class Layout {
         for(Vertex vi : graph.getVertices()){
 
             F = new Point3D(0,0,0);
-            viNeighbors = graph.inNeighbors(vi);
-            viNeighbors.addAll(graph.outNeighbors(vi));
+            viNeighbors = graph.getInNeighbors(vi);
+            viNeighbors.addAll(graph.getOutNeighbors(vi));
 
             for(Vertex vj : graph.getVertices()){
                 if(vj!=stat && vi!=vj) {
