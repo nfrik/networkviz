@@ -522,6 +522,11 @@ public class Graph {
         }
     }
 
+    /**
+     * Transform position of vertex to destination with edge resize
+     * @param vertex
+     * @param destination
+     */
     public void transformVertex(Vertex vertex, Point3D destination) {
         List<Edge> edges = getOutNeigborEdges(vertex);
 
