@@ -5,6 +5,7 @@ import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Shape3D;
 
+
 /**
  * Created by NF on 2/13/2017.
  */
@@ -13,6 +14,8 @@ class Edge extends Box {
     private String name;
     private Double resistance;
     private Object uniqueProperties;
+    //TODO allow import of CircuitElm
+//    private CiruitElm ciruitElm;
     private Vertex startPoint;
     private Vertex endPoint;
 

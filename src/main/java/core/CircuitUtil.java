@@ -16,7 +16,7 @@ public class CircuitUtil{
 
     private static final int LAT = 50;
 
-    public static Graph generateRandomCircuit(int size, int dim, double sparceness) {
+    public static Graph generateRandomCircuit(int size, int dim, double sparceness, CircuitTypes type) {
         Graph G = new Graph();
 
         G.getVertexDefaultMaterial().setDiffuseColor(Color.BLUE);
@@ -38,6 +38,8 @@ public class CircuitUtil{
             }
         }
 
+
+
         return G;
     }
 
@@ -47,7 +49,7 @@ public class CircuitUtil{
      * @param path - path to file
      * @return
      */
-    public static boolean exportGraphToCSFile(Graph g, String path, CircuitTypes type) {
+    public static boolean exportGraphToCSFile(Graph g, String path) {
         normalizeGraphNodePositionsForCS(g);
 
         Random random = new Random();

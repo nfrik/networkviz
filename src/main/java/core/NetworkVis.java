@@ -93,8 +93,8 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,2,0.5);
-        CircuitUtil.exportGraphToCSFile(mapGraph,"c:\\Users\\NF\\IdeaProjects\\networkviz\\test.txt",CircuitTypes.MEMRISTORS);
+        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,2,0.5,CircuitTypes.MEMRISTORS);
+        CircuitUtil.exportGraphToCSFile(mapGraph,"c:\\Users\\NF\\IdeaProjects\\networkviz\\test.txt");
 
 //        Graph mapGraph = new Graph();
 //        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
