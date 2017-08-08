@@ -9,7 +9,6 @@ import org.circuitsymphony.element.CircuitElm;
 class Edge extends Box {
 
     private String name;
-    private Double resistance;
     private Object uniqueProperties;
     private CircuitElm circuitElm;
     private Vertex startPoint;
@@ -38,14 +37,6 @@ class Edge extends Box {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Double getResistance() {
-        return resistance;
-    }
-
-    public void setResistance(Double resistance) {
-        this.resistance = resistance;
     }
 
     public Object getUniqueProperties() {
