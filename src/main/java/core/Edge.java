@@ -1,10 +1,7 @@
 package core;
 
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Cylinder;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.shape.Shape3D;
-
+import org.circuitsymphony.element.CircuitElm;
 
 /**
  * Created by NF on 2/13/2017.
@@ -14,8 +11,7 @@ class Edge extends Box {
     private String name;
     private Double resistance;
     private Object uniqueProperties;
-    //TODO allow import of CircuitElm
-//    private CiruitElm ciruitElm;
+    private CircuitElm circuitElm;
     private Vertex startPoint;
     private Vertex endPoint;
 
@@ -54,6 +50,14 @@ class Edge extends Box {
 
     public Object getUniqueProperties() {
         return uniqueProperties;
+    }
+
+    public CircuitElm getCircuitElm() {
+        return circuitElm;
+    }
+
+    public void setCircuitElm(CircuitElm circuitElm) {
+        this.circuitElm = circuitElm;
     }
 
     public void setUniqueProperties(Object uniqueProperties) {
