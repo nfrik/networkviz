@@ -93,7 +93,7 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,3,0.5);
+        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,2,0.5);
 
 
 //        Graph mapGraph = new Graph();
