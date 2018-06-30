@@ -304,6 +304,9 @@ public class MoleculeSampleApp extends Application {
                 double deltaZ = rn.nextDouble() - .5;
 //                bond1Cylinder.setLayoutX(bond1Cylinder.getLayoutX() + deltaX);
 //                bond1Cylinder.setLayoutY(bond1Cylinder.getLayoutY() + deltaY);
+                for(Cylinder cc : cylinders){
+                    cc.setMaterial(greyMaterial);
+                }
                 for (Cylinder c : cylinders) {
                     c.setTranslateX(c.getTranslateX() + deltaX + rn.nextDouble() - .5);
                     c.setTranslateY(c.getTranslateY() + deltaY + rn.nextDouble() - .5);
@@ -373,7 +376,7 @@ public class MoleculeSampleApp extends Application {
                         block.setMaterial(redMaterial);
                         static_bloc.setMaterial(redMaterial);
                     }else{
-                        static_bloc.setMaterial(greyMaterial);
+//                        static_bloc.setMaterial(greyMaterial);
 //                        block.setMaterial(greyMaterial);
                     }
 //                }
