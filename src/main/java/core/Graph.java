@@ -27,7 +27,7 @@ public class Graph {
     private Point3D xAxis = new Point3D(1, 0, 0);
     private Point3D zAxis = new Point3D(0, 0, 1);
     private Point3D origin = new Point3D(0, 0, 0);
-    private double vertexDefaultRadius = 100;
+    private double vertexDefaultRadius = 3;
 
 
     public double getVertexDefaultRadius() {

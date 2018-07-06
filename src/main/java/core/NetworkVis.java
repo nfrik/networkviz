@@ -85,7 +85,7 @@ public class NetworkVis extends Application {
         PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
         redMaterial.setSpecularColor(Color.RED);
-        Sphere sphere = new Sphere(5);
+        Sphere sphere = new Sphere(0.1);
         sphere.setMaterial(redMaterial);
         sphere.setTranslateX(10.0);
         sphere.setTranslateY(-100.0);
@@ -93,10 +93,10 @@ public class NetworkVis extends Application {
 //        world.getChildren().addAll(box);
 
 
-        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,2,0.5);
+//        Graph mapGraph = CircuitUtil.generateRandomCircuit(1000,2,0.5);
 
 
-//        Graph mapGraph = new Graph();
+        Graph mapGraph = new Graph();
 //        mapGraph.getVertexDefaultMaterial().setDiffuseColor(Color.AQUA);
 //        mapGraph.getEdgeDefaultMaterial().setDiffuseColor(Color.WHITE);
 //        mapGraph.setVertexDefaultRadius(20);
@@ -115,7 +115,7 @@ public class NetworkVis extends Application {
 //        mapGraph.addEdge(v3,v5,whiteMaterial,new Object());
 //        mapGraph.addEdge(v4,v5,whiteMaterial,new Object());
 
-//        mapGraph.generateRandomGraph(40,0.96,whiteMaterial);
+        mapGraph.generateRandomGraph(30,0.96,whiteMaterial);
 //        mapGraph.generateCubicLattice3D(1000, 1000,1000,50,50,50,null,true);
 
 //        mapGraph.generateSquareLattice2D(500,500,50,null,true);
@@ -152,7 +152,7 @@ public class NetworkVis extends Application {
         Random rn = new Random();
         Layout layout = new Layout();
 
-        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(500), new EventHandler<ActionEvent>() {
+        final Timeline loop = new Timeline(new KeyFrame(Duration.millis(100), new EventHandler<ActionEvent>() {
             Point3D startP = new Point3D(0,0,0);
             double alpha = 0;
             double betta = 0;
@@ -174,9 +174,9 @@ public class NetworkVis extends Application {
 //                    mapGraph.transformVertexRandomDelta(vertex,1);
 //                }
 
-//                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
+                layout.runSpring(mapGraph,mapGraph.getVertices().iterator().next());
 //                mapGraph.removeVertex(mapGraph.getRandomVertex(),world);
-                mapGraph.removeEdge(mapGraph.getRandomEdge(),world);
+//                mapGraph.removeEdge(mapGraph.getRandomEdge(),world);
 
 
 //                world.getChildren().clear();
@@ -186,7 +186,7 @@ public class NetworkVis extends Application {
         }));
 
         loop.setCycleCount(Timeline.INDEFINITE);
-//        loop.play();
+        loop.play();
     }
 
 
